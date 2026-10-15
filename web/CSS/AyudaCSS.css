@@ -1,0 +1,325 @@
+/* ============================================================
+   AyudaCSS.css — Centro de Ayuda (página standalone)
+   ============================================================ */
+
+/* -- Página completa ---------------------------------------- */
+.cc-help-body {
+  min-height: 100vh;
+  background: var(--cc-bg, #f4f6f8);
+  font-family: var(--cc-font, 'DM Sans', system-ui, sans-serif);
+  margin: 0;
+  color: var(--cc-text, #1e293b);
+}
+
+/* -- Topbar ------------------------------------------------ */
+.cc-help-topbar {
+  background: var(--cc-dark, #00304D);
+  padding: 0 1.5rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.cc-help-topbar-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cc-help-brand {
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.cc-help-back {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  color: rgba(255,255,255,.85);
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 500;
+  padding: .4rem .75rem;
+  border-radius: 8px;
+  transition: background .15s, color .15s;
+}
+.cc-help-back:hover {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+}
+.cc-help-back .material-symbols-outlined { font-size: 1.1rem; }
+
+/* -- Layout: menu izq + contenido der ---------------------- */
+.cc-help-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+/* -- Menú izquierdo ---------------------------------------- */
+.cc-help-menu {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--cc-surface, #fff);
+  border-radius: var(--cc-radius-lg, 12px);
+  box-shadow: var(--cc-shadow-sm, 0 1px 3px rgba(0,0,0,.06));
+  padding: 1rem;
+  align-self: flex-start;
+  position: sticky;
+  top: 72px;
+}
+.cc-help-menu-title {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--cc-muted, #64748b);
+  padding: 0 .5rem .75rem;
+  margin: 0;
+}
+.cc-help-menu-item {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  width: 100%;
+  padding: .6rem .75rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  color: var(--cc-text, #1e293b);
+  font-size: .875rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  text-align: left;
+}
+.cc-help-menu-item .material-symbols-outlined { font-size: 1.15rem; color: var(--cc-muted, #64748b); }
+.cc-help-menu-item:hover { background: var(--cc-bg, #f4f6f8); }
+.cc-help-menu-item.active {
+  background: var(--cc-primary-light, #e8f5e0);
+  color: var(--cc-primary-dark, #2c8800);
+  font-weight: 700;
+}
+.cc-help-menu-item.active .material-symbols-outlined { color: var(--cc-primary, #38a800); }
+
+/* -- Contenido derecho ------------------------------------ */
+.cc-help-content {
+  flex: 1;
+  min-width: 0;
+}
+.cc-help-section {
+  background: var(--cc-surface, #fff);
+  border-radius: var(--cc-radius-lg, 12px);
+  box-shadow: var(--cc-shadow-sm, 0 1px 3px rgba(0,0,0,.06));
+  padding: 2rem;
+}
+.cc-help-section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--cc-text, #1e293b);
+  margin: 0 0 .25rem;
+}
+.cc-help-section-desc {
+  font-size: .85rem;
+  color: var(--cc-muted, #64748b);
+  margin-bottom: 1rem;
+}
+
+/* -- Video 16:9 ------------------------------------------- */
+.cc-video-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: var(--cc-radius, 10px);
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a2b12 0%, #00304D 100%);
+  margin-top: 1rem;
+}
+.cc-video-wrap iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.cc-video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,.8);
+  gap: .5rem;
+}
+.cc-video-placeholder .material-symbols-outlined {
+  font-size: 3rem;
+  opacity: .7;
+}
+.cc-video-placeholder span:last-child {
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+/* -- Pasos ------------------------------------------------- */
+.cc-help-steps {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  counter-reset: step;
+}
+.cc-help-steps li {
+  counter-increment: step;
+  display: block;
+  padding: .65rem 0 .65rem 2.25rem;
+  position: relative;
+  font-size: .9rem;
+  line-height: 1.55;
+  border-bottom: 1px solid var(--cc-border, #e2e8f0);
+}
+.cc-help-steps li:last-child { border-bottom: none; }
+.cc-help-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: .65rem;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--cc-primary-light, #e8f5e0);
+  color: var(--cc-primary-dark, #2c8800);
+  font-weight: 700;
+  font-size: .78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* -- Tip / Nota -------------------------------------------- */
+.cc-help-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  background: #fef9c3;
+  border-left: 4px solid var(--cc-warning, #f59e0b);
+  border-radius: 0 8px 8px 0;
+  padding: .75rem 1rem;
+  margin-top: 1rem;
+  font-size: .85rem;
+  color: #92400e;
+  line-height: 1.5;
+}
+.cc-help-tip .material-symbols-outlined {
+  font-size: 1.1rem;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+/* -- Enlace ------------------------------------------------ */
+.cc-help-link {
+  color: var(--cc-primary, #38a800);
+  font-weight: 600;
+  text-decoration: none;
+}
+.cc-help-link:hover {
+  color: var(--cc-primary-dark, #2c8800);
+  text-decoration: underline;
+}
+
+/* -- Descargar App / QR ------------------------------------- */
+.cc-download-card {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: var(--cc-bg, #f4f6f8);
+  border-radius: var(--cc-radius-lg, 12px);
+  border: 1px solid var(--cc-border, #e2e8f0);
+  padding: 1.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.cc-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .6rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: var(--cc-shadow-sm, 0 1px 3px rgba(0,0,0,.06));
+  flex-shrink: 0;
+}
+.cc-qr-box #cc-qrcode img { display: block; }
+.cc-qr-hint {
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--cc-muted, #64748b);
+}
+.cc-download-info {
+  flex: 1;
+  min-width: 220px;
+}
+.cc-download-icon {
+  font-size: 2rem;
+  color: var(--cc-primary, #38a800);
+}
+.cc-download-info h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: .35rem 0 .5rem;
+}
+.cc-download-info p {
+  font-size: .875rem;
+  color: var(--cc-text, #1e293b);
+  line-height: 1.55;
+  margin-bottom: .5rem;
+}
+.cc-download-note {
+  font-size: .8rem;
+  color: var(--cc-muted, #64748b);
+}
+.cc-btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .75rem;
+  background: var(--cc-primary, #38a800);
+  color: #fff;
+  font-weight: 600;
+  font-size: .875rem;
+  padding: .6rem 1.1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background .15s;
+}
+.cc-btn-download:hover {
+  background: var(--cc-primary-dark, #2c8800);
+  color: #fff;
+}
+.cc-btn-download .material-symbols-outlined { font-size: 1.15rem; }
+
+/* -- Responsive ------------------------------------------- */
+@media (max-width: 768px) {
+  .cc-help-layout {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  .cc-help-menu {
+    width: 100%;
+    position: static;
+    display: flex;
+    gap: .5rem;
+    padding: .75rem;
+    overflow-x: auto;
+  }
+  .cc-help-menu-title { display: none; }
+  .cc-help-menu-item { white-space: nowrap; font-size: .8rem; padding: .5rem .6rem; }
+  .cc-help-section { padding: 1.25rem; }
+}

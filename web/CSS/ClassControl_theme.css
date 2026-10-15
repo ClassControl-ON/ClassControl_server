@@ -1,0 +1,139 @@
+/* ============================================================
+   ClassControl_theme.css
+   Carga fuentes web y mapea los tokens de ClassControl_base.css
+   a las variables internas de Bootstrap 5 (--bs-*), además de
+   ajustes tipográficos generales.
+
+   NO define colores/espaciados propios: todos los valores de
+   marca viven en ClassControl_base.css (--cc-*). Cargar SIEMPRE
+   después de base.css y antes del CSS propio de cada pantalla.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bs-blue:              var(--cc-secondary);
+  --bs-primary:           var(--cc-primary);
+  --bs-primary-rgb:       var(--cc-primary-rgb);
+  --bs-secondary:         var(--cc-secondary);
+  --bs-success:           var(--cc-primary);
+  --bs-success-rgb:       var(--cc-primary-rgb);
+  --bs-body-font-family:  var(--cc-font);
+  --bs-body-font-size:    var(--cc-fs-base);
+  --bs-body-color:        var(--cc-text);
+  --bs-body-bg:           var(--cc-bg);
+  --bs-secondary-color:   var(--cc-muted);
+  --bs-border-color:      var(--cc-border);
+  --bs-link-color:        var(--cc-secondary);
+  --bs-link-hover-color:  var(--cc-dark);
+  --bs-focus-ring-color:  var(--cc-primary-shadow);
+}
+
+/* Paleta común del modo oscuro. Centralizarla evita que una pantalla quede
+   parcialmente blanca cuando no tiene reglas propias para todos sus bloques. */
+html[data-bs-theme="dark"] {
+  color-scheme: dark;
+  --cc-bg: #0f1a13;
+  --cc-surface: #16241c;
+  --cc-border: #2c3d33;
+  --cc-text: #f1f5f9;
+  --cc-muted: #94a3b8;
+}
+html[data-bs-theme="dark"] body { background: var(--cc-bg); color: var(--cc-text); }
+html[data-bs-theme="dark"] h1,
+html[data-bs-theme="dark"] h2,
+html[data-bs-theme="dark"] .h1,
+html[data-bs-theme="dark"] .h2,
+html[data-bs-theme="dark"] .cc-page-title { color: var(--cc-text); }
+html[data-bs-theme="dark"] .modal-content,
+html[data-bs-theme="dark"] .card,
+html[data-bs-theme="dark"] .dropdown-menu,
+html[data-bs-theme="dark"] .form-control,
+html[data-bs-theme="dark"] .form-select,
+html[data-bs-theme="dark"] .input-group-text { background-color: var(--cc-surface); color: var(--cc-text); border-color: var(--cc-border); }
+html[data-bs-theme="dark"] .cc-card-header { background: var(--cc-surface); }
+html[data-bs-theme="dark"] .dataTables_wrapper .dataTables_filter input,
+html[data-bs-theme="dark"] .dataTables_wrapper .dataTables_length select,
+html[data-bs-theme="dark"] .cc-input { background-color: var(--cc-surface); color: var(--cc-text); }
+/* Los menús desplegables son controles nativos: color-scheme y option
+   garantizan contraste tanto en Chromium como en Firefox y Safari. */
+html[data-bs-theme="dark"] select,
+html[data-bs-theme="dark"] select option,
+html[data-bs-theme="dark"] select optgroup {
+  background-color: var(--cc-surface);
+  color: var(--cc-text);
+}
+html[data-bs-theme="dark"] select:focus-visible { outline: 2px solid var(--cc-primary); outline-offset: 2px; }
+html[data-bs-theme="light"] { color-scheme: light; }
+html[data-bs-theme="dark"] .cc-btn-outline:hover:not(:disabled),
+html[data-bs-theme="dark"] .cc-btn-icon:hover { background: var(--cc-bg); color: var(--cc-text); }
+
+/* Márgenes homogéneos para las cuatro pantallas de catálogos. */
+.cc-catalog-main { padding: clamp(1.25rem, 2.5vw, 2.5rem); }
+
+body, button, input, select, textarea { font-family: var(--cc-font); }
+h1, .h1 { color: var(--cc-dark); font-size: 1.75rem; font-weight: 700; }
+h2, .h2 { color: var(--cc-dark); font-size: 1.25rem; font-weight: 700; }
+h3, .h3 { color: var(--cc-secondary); font-size: 1rem; font-weight: 600; }
+p, .form-control, .form-select, .btn { color: var(--cc-text); }
+.form-label, .form-text, .text-muted { color: var(--cc-muted) !important; font-size: .75rem; font-weight: 500; }
+
+.btn-primary, .cc-btn-primary { --bs-btn-bg: var(--cc-primary); --bs-btn-border-color: var(--cc-primary); --bs-btn-hover-bg: var(--cc-primary-dark); --bs-btn-hover-border-color: var(--cc-primary-dark); --bs-btn-active-bg: var(--cc-primary-dark); --bs-btn-active-border-color: var(--cc-primary-dark); }
+.btn-outline-primary { --bs-btn-color: var(--cc-secondary); --bs-btn-border-color: var(--cc-secondary); --bs-btn-hover-bg: var(--cc-secondary); --bs-btn-hover-border-color: var(--cc-secondary); }
+.btn:focus-visible, .form-control:focus, .form-select:focus { border-color: var(--cc-primary); box-shadow: 0 0 0 .25rem var(--cc-primary-shadow); }
+.form-control::placeholder, .form-select:invalid { color: var(--cc-muted); }
+
+.table, .dataTable { --bs-table-color: var(--cc-text); --bs-table-bg: var(--cc-surface); --bs-table-striped-bg: var(--cc-bg); --bs-table-hover-bg: var(--cc-primary-light); font-family: var(--cc-font-data); }
+.table thead th, .dataTable thead th { color: var(--cc-dark); font-size: .75rem; font-weight: 600; }
+.cc-id, .cc-ficha-num, [data-code], code, .font-monospace { font-family: var(--cc-font-mono) !important; color: var(--cc-primary-dark); }
+
+.card, .modal-content, .dropdown-menu { border-color: var(--cc-border); }
+.alert-success { --bs-alert-color: var(--cc-primary-dark); --bs-alert-bg: var(--cc-primary-light); --bs-alert-border-color: var(--cc-primary); }
+.pagination { --bs-pagination-color: var(--cc-secondary); --bs-pagination-hover-color: var(--cc-dark); --bs-pagination-active-bg: var(--cc-primary); --bs-pagination-active-border-color: var(--cc-primary); }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+
+/* ============================================================
+   RESPONSIVE MÓVIL (compartido por todas las pantallas web)
+   - Evita que los botones/u acciones se salgan de la pantalla.
+   - El buscador del header baja a su propia línea en pantallas
+     muy pequeñas para no apretar los botones de acción.
+   - Las barras de herramientas (filtros) se apilan verticalmente.
+   - Las tablas se desplazan dentro de su tarjeta.
+   ============================================================ */
+.cc-main { min-width: 0; }
+/* NOTA: se eliminó el antiguo "html, body { overflow-x: hidden }" global.
+   Ocultar desbordes enmascaraba problemas reales (p. ej. el drawer del
+   sidebar y tablas anchas). Los desbordes se corrigen en su origen:
+   .table-responsive en las tablas, flex-wrap en headers y min-width:0. */
+
+.cc-toolbar,
+.cc-actions,
+.header-actions { flex-wrap: wrap; }
+.cc-toolbar .btn,
+.cc-actions .btn,
+.header-actions .btn,
+.d-flex.gap-2 .btn { flex: 0 1 auto; white-space: nowrap; }
+
+@media (max-width: 767.98px) {
+  .cc-main header .container-fluid { align-items: flex-start !important; }
+  .cc-main header .d-flex.flex-grow-1 { flex-basis: 100%; }
+  .cc-main header .d-flex.flex-grow-1 .input-group { max-width: 100% !important; }
+  .cc-catalog-main { padding: 1.15rem; }
+
+  /* Grupos de acciones del encabezado: permitir que se adapten
+     y envuelvan en pantallas estrechas en vez de desbordar. */
+  .cc-main .d-flex.justify-content-between > .d-flex,
+  .cc-main header .cc-header-right,
+  .cc-main header .cc-header__actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .card-body table.table, .card-body .table { display: block; overflow-x: auto; white-space: nowrap; }
+  .modal-footer .btn { flex: 1 1 auto; }
+  .modal-body .row > [class*="col-"] { padding-right: .35rem; padding-left: .35rem; }
+  .cc-catalog-main { padding: 1rem; }
+  .cc-page-title { font-size: 1.35rem; }
+  #appToast { width: calc(100vw - 2rem); }
+}

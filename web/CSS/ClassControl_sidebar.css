@@ -1,0 +1,293 @@
+/* ============================================================
+   ClassControl_sidebar.css
+   Estilos ÚNICOS del sidebar/header compartido (_Sidebar.jspf).
+   Cargar SIEMPRE después de ClassControl_theme.css y antes del
+   CSS propio de cada pantalla:
+
+     <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
+     <link rel="stylesheet" href="CSS/ClassControl_theme.css"/>
+     <link rel="stylesheet" href="CSS/ClassControl_sidebar.css"/>
+     <link rel="stylesheet" href="CSS/ProgramasCSS.css"/>
+
+   No se debe duplicar el CSS del sidebar en el CSS de cada
+   pantalla: esta es ahora la única fuente.
+   ============================================================ */
+
+.cc-sidebar {
+  width: var(--cc-sidebar-w);
+  background: var(--cc-dark);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  height: 100dvh;              /* respeta las barras del navegador móvil */
+  overflow-y: auto;
+  transition: transform var(--cc-transition, .2s ease);
+  z-index: 1040;
+}
+
+/* Overlay (scrim) que oscurece el contenido al abrir el drawer en móvil.
+   Creado dinámicamente por JS/ClassControl_theme.js (y también válido
+   si alguna página lo colocó en su markup). */
+.cc-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 1035;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--cc-transition, .2s ease), visibility var(--cc-transition, .2s ease);
+}
+.cc-sidebar-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+.cc-sidebar-logo {
+  padding: 1.5rem 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.cc-logo-box {
+  background: #fff;
+  padding: 0.3rem;
+  border-radius: var(--cc-radius, 8px);
+  flex-shrink: 0;
+}
+.cc-logo-box img { width: 36px; height: auto; display: block; }
+.cc-brand-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  color: #fff;                 /* antes heredaba el color oscuro de h1 (--cc-dark)
+                                   y quedaba invisible sobre el fondo oscuro del sidebar */
+  font-family: var(--cc-font);
+}
+.cc-brand-sub {
+  font-size: 0.7rem;
+  color: var(--cc-primary);
+  font-weight: 600;
+  margin: 2px 0 0;
+  font-family: var(--cc-font);
+}
+
+/* -- Nav ------------------------------------------- */
+.cc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.75rem;
+}
+.cc-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--cc-radius, 8px);
+  color: rgba(255,255,255,.75);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: var(--cc-font);
+  transition: background .15s ease, color .15s ease;
+}
+.cc-nav-link .material-symbols-outlined { font-size: 1.25rem; }
+.cc-nav-link--standard { font-size: .9rem; }
+.cc-nav-link--compact { font-size: .78rem; }
+.cc-nav-link--programacion { font-size: 1rem; }
+.cc-nav-link:hover       { background: rgba(255,255,255,.10); color: #fff; }
+.cc-nav-link.active      { background: var(--cc-primary); color: #fff; font-weight: 700; }
+.cc-nav-separator {
+  height: 1px;
+  background: rgba(255,255,255,.1);
+  margin: 0.5rem 0.75rem;
+}
+
+/* -- Footer (usuario + cerrar sesión) ---------------
+   Reemplaza el antiguo "© 2024 SENA ClassControl" por
+   la info real del usuario en sesión, igual en toda la app. */
+.cc-sidebar-footer {
+  margin-top: auto;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255,255,255,.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.cc-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+.cc-user-icon {
+  font-size: 2rem;
+  color: rgba(255,255,255,.8);
+  flex-shrink: 0;
+}
+.cc-user-name {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  font-family: var(--cc-font);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cc-user-role {
+  margin: 0;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,.55);
+  font-family: var(--cc-font);
+}
+.cc-btn-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: var(--cc-radius, 8px);
+  background: rgba(239,68,68,.12);
+  color: #fca5a5;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--cc-font);
+  border: none;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.cc-btn-logout:hover { background: rgba(239,68,68,.25); color: #fecaca; }
+.cc-btn-logout .material-symbols-outlined { font-size: 1.1rem; }
+
+/* -- Layout general (sidebar + main) ---------------- */
+/* Regla compartida: antes viva solo en el CSS de cada
+   pagina y las paginas sin CSS propio quedaban apiladas */
+.cc-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* -- Main / Header --------------------------------- */
+.cc-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--cc-bg);
+  margin-left: var(--cc-sidebar-w);
+}
+.cc-header, .cc-top-header, .cc-topbar {
+  height: var(--cc-header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  background: var(--cc-surface);
+  border-bottom: 1px solid var(--cc-border);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+.cc-header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.cc-page-title { font-family: var(--cc-font); }
+.cc-page-sub   { font-family: var(--cc-font); color: var(--cc-muted); font-size: .8rem; }
+
+.cc-hamburger {
+  border: none;
+  background: transparent;
+  color: var(--cc-text);
+}
+
+.cc-user-info .cc-user-name { color: var(--cc-text); }
+.cc-user-info .cc-user-role { color: var(--cc-muted); }
+
+.cc-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cc-primary-light);
+}
+.cc-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.cc-avatar .material-symbols-outlined { font-size: 1.75rem; color: var(--cc-primary); }
+
+.cc-icon-btn {
+  border: none;
+  background: transparent;
+  color: var(--cc-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cc-icon-btn:hover { background: var(--cc-bg); }
+
+/* -- Responsive ------------------------------------ */
+@media (max-width: 991.98px) {
+  .cc-sidebar,
+  .cc-sidebar.show {
+    position: fixed;
+    left: 0;
+    transform: translateX(-100%);
+  }
+  .cc-sidebar.open,
+  .cc-sidebar.open.show {
+    transform: translateX(0);
+    box-shadow: 0 0 24px rgba(0,0,0,.35);
+  }
+  .cc-main { margin-left: 0; }
+  .cc-header, .cc-top-header, .cc-topbar { padding: 0 1rem; }
+}
+
+@media (max-width: 575.98px) {
+  .cc-header, .cc-top-header, .cc-topbar {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--cc-header-h);
+    gap: .25rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+  }
+}
+
+/* -- Botón hamburguesa (páginas catálogo) --------- */
+.cc-sidebar-toggle {
+  border: none;
+  background: transparent;
+  color: var(--cc-text);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--cc-radius, 8px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cc-sidebar-toggle:hover { background: var(--cc-bg); }
+.cc-sidebar-toggle .material-symbols-outlined { font-size: 1.5rem; }
+
+/* -- Modo oscuro ----------------------------------- */
+html[data-bs-theme="dark"] .cc-header,
+html[data-bs-theme="dark"] .cc-top-header,
+html[data-bs-theme="dark"] .cc-topbar {
+  background: #16241c;
+  border-bottom-color: rgba(255,255,255,.08);
+}
+html[data-bs-theme="dark"] .cc-main { background: #0f1a13; }

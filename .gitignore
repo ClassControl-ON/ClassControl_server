@@ -1,0 +1,18 @@
+# ClassControl backend - archivos que NO van al repositorio
+
+# Salida de compilacion (se regenera con ant clean dist)
+/build/
+/tmp/
+
+# Dependencias locales (JARs) - se resuelven en build
+/lib/
+
+# Archivos locales de NetBeans
+/nbproject/private/
+
+# Logs de crash de JVM y otros
+*.log
+*.zip
+
+# Agentes locales de opencode
+/.agents/

@@ -1,0 +1,157 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%--
+  ══════════════════════════════════════════════════════════════
+  _Sidebar.jspf — Sidebar compartido de ClassControl
+  ══════════════════════════════════════════════════════════════
+  Uso: cada página, ANTES de este include, debe declarar cuál es
+  la página activa y tener ya cargados sesNombres/sesApellidos/sesRol
+  desde el bloque de protección de sesión que ya usan las páginas:
+
+    <% String ccActivePage = "fichas"; %>
+    <%@ include file="_Sidebar.jspf" %>
+
+  Valores válidos de ccActivePage:
+    inicio | fichas | instructores | programas | ambientes |
+    competencias | actividades | programacion | incidencias |
+    usuarios | perfil
+
+  No inventa markup nuevo de golpe: reutiliza exactamente las
+  clases cc-sidebar / cc-nav-link / cc-sidebar-footer que ya
+  existían en el proyecto (Instructores.jsp), así no rompe el
+  CSS que ya tienes en ClassControl_base.css.
+  ══════════════════════════════════════════════════════════════
+--%>
+<%
+    // Nombre para mostrar en el pie del sidebar
+    String ccNombreCompleto = (sesNombres != null ? sesNombres : "")
+            + (sesApellidos != null ? " " + sesApellidos : "");
+    if (ccNombreCompleto.trim().isEmpty()) {
+        ccNombreCompleto = (sesUsername != null ? sesUsername : "Usuario");
+    }
+
+    // Mapear id de rol -> nombre visible (según tabla Roles)
+    String ccRolNombre = "Usuario";
+    if (sesRol != null) {
+        switch (sesRol) {
+            case 1: ccRolNombre = "Instructor"; break;
+            case 2: ccRolNombre = "Aprendiz"; break;
+            case 3: ccRolNombre = "Administrador"; break;
+            case 4: ccRolNombre = "Coordinador"; break;
+        }
+    }
+
+    if (ccActivePage == null) { ccActivePage = ""; }
+
+    /*
+     * ═══════════════ VISIBILIDAD DEL MENÚ POR ROL ═══════════════
+     * id rol: 1=Instructor  2=Aprendiz  3=Administrador  4=Coordinador
+     *
+     *                Inicio Fichas Instr. Progr. Ambien. Compet. Activ. Progrmc. Reportes Usuar. Perfil
+     * Administrador    x      x      x      x      x       x      x       x        x       x      x
+     * Coordinador      x      x      x      x      x       x      x       x        x       x      x   (sin poder eliminar)
+     * Instructor       x      x*     x**    -      -       -      x       x***     -       -      x
+     * Aprendiz         x      -      -      -      -       -      x       x****    -       -      x
+     *
+     *  *   Instructor: solo ve las fichas asignadas a su propia programación.
+     *  **  Instructor: Instructores en modo solo lectura (contacto).
+     *  *** Instructor: puede crear/editar su propio horario.
+     *  **** Aprendiz: solo ve su propio horario/ambiente asignado.
+     */
+    boolean ccEsAdmin        = sesRol != null && sesRol == 3;
+    boolean ccEsCoordinador  = sesRol != null && sesRol == 4;
+    boolean ccEsInstructor   = sesRol != null && sesRol == 1;
+    boolean ccEsAprendiz     = sesRol != null && sesRol == 2;
+    boolean ccEsGestor       = ccEsAdmin || ccEsCoordinador; // Admin + Coordinador
+
+    boolean ccVerFichas        = ccEsGestor || ccEsInstructor;
+    boolean ccVerInstructores  = ccEsGestor || ccEsInstructor;
+    boolean ccVerProgramas     = ccEsGestor;
+    boolean ccVerAmbientes     = ccEsGestor || ccEsInstructor; // igual que la app: todos menos aprendiz
+    boolean ccVerCompetencias  = ccEsGestor || ccEsAprendiz;
+    boolean ccVerActividades   = true; // todos los roles
+    boolean ccVerProgramacion  = true; // todos los roles (contenido filtrado por rol)
+    boolean ccVerReportes      = ccEsGestor || ccEsInstructor; // Incidencias
+    boolean ccVerUsuarios      = ccEsAdmin; // igual que la app: solo administrador
+%>
+<aside class="cc-sidebar" id="cc-sidebar">
+  <div class="cc-sidebar-logo">
+    <div class="cc-logo-box">
+      <img src="img/logo.png" alt="Logo ClassControl" />
+    </div>
+    <div>
+      <h1 class="cc-brand-name">ClassControl</h1>
+      <p class="cc-brand-sub">Gestión Educativa</p>
+    </div>
+  </div>
+
+  <nav class="cc-nav">
+    <a class="cc-nav-link cc-nav-link--standard <%= "inicio".equals(ccActivePage) ? "active" : "" %>" href="Pagina_Principal.jsp">
+      <span class="material-symbols-outlined">dashboard</span><span>Inicio</span>
+    </a>
+    <% if (ccVerFichas) { %>
+    <a class="cc-nav-link cc-nav-link--standard <%= "fichas".equals(ccActivePage) ? "active" : "" %>" href="Fichas.jsp">
+      <span class="material-symbols-outlined">description</span><span>Fichas</span>
+    </a>
+    <% } %>
+    <% if (ccVerInstructores) { %>
+    <a class="cc-nav-link cc-nav-link--standard <%= "instructores".equals(ccActivePage) ? "active" : "" %>" href="Instructores.jsp">
+      <span class="material-symbols-outlined">groups</span><span>Instructores</span>
+    </a>
+    <% } %>
+    <% if (ccVerProgramas) { %>
+    <a class="cc-nav-link cc-nav-link--compact <%= "programas".equals(ccActivePage) ? "active" : "" %>" href="Programas.jsp">
+      <span class="material-symbols-outlined">school</span><span>Programas</span>
+    </a>
+    <% } %>
+    <% if (ccVerAmbientes) { %>
+    <a class="cc-nav-link cc-nav-link--compact <%= "ambientes".equals(ccActivePage) ? "active" : "" %>" href="Ambientes.jsp">
+      <span class="material-symbols-outlined">meeting_room</span><span>Ambientes</span>
+    </a>
+    <% } %>
+    <% if (ccVerCompetencias) { %>
+    <a class="cc-nav-link cc-nav-link--compact <%= "competencias".equals(ccActivePage) ? "active" : "" %>" href="Competencias.jsp">
+      <span class="material-symbols-outlined">target</span><span>Competencias</span>
+    </a>
+    <% } %>
+    <% if (ccVerActividades) { %>
+    <a class="cc-nav-link cc-nav-link--compact <%= "actividades".equals(ccActivePage) ? "active" : "" %>" href="Actividades.jsp">
+      <span class="material-symbols-outlined">assignment_turned_in</span><span>Actividades</span>
+    </a>
+    <% } %>
+    <% if (ccVerProgramacion) { %>
+    <a class="cc-nav-link cc-nav-link--programacion <%= "programacion".equals(ccActivePage) ? "active" : "" %>" href="ProgramacionInstructoresServlet">
+      <span class="material-symbols-outlined">calendar_month</span><span>Programación</span>
+    </a>
+    <% } %>
+    <% if (ccVerReportes || ccVerUsuarios) { %>
+    <div class="cc-nav-separator"></div>
+    <% } %>
+    <% if (ccVerReportes) { %>
+    <a class="cc-nav-link cc-nav-link--standard <%= "incidencias".equals(ccActivePage) ? "active" : "" %>" href="Incidencias.jsp">
+      <span class="material-symbols-outlined">report_problem</span><span>Incidencias</span>
+    </a>
+    <% } %>
+    <% if (ccVerUsuarios) { %>
+    <a class="cc-nav-link cc-nav-link--standard <%= "usuarios".equals(ccActivePage) ? "active" : "" %>" href="Gestion_Usuarios.jsp">
+      <span class="material-symbols-outlined">manage_accounts</span><span>Usuarios</span>
+    </a>
+    <% } %>
+    <a class="cc-nav-link cc-nav-link--standard <%= "perfil".equals(ccActivePage) ? "active" : "" %>" href="Mi_Perfil.jsp">
+      <span class="material-symbols-outlined">person</span><span>Mi Perfil</span>
+    </a>
+  </nav>
+
+  <div class="cc-sidebar-footer">
+    <div class="cc-user-chip">
+      <span class="material-symbols-outlined cc-user-icon">account_circle</span>
+      <div class="overflow-hidden">
+        <p class="cc-user-name" title="<%= ccNombreCompleto %>"><%= ccNombreCompleto %></p>
+        <p class="cc-user-role"><%= ccRolNombre %></p>
+      </div>
+    </div>
+    <a href="Cerrar_Sesion.jsp" class="cc-btn-logout">
+      <span class="material-symbols-outlined">logout</span>
+      <span>Cerrar Sesión</span>
+    </a>
+  </div>
+</aside>

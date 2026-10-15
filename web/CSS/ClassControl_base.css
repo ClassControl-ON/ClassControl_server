@@ -1,0 +1,244 @@
+﻿/* ============================================================
+   ClassControl_base.css
+   Fuente única de las variables de marca (--cc-*) y de los
+   botones compartidos cc-btn-*. El resto de CSS de pantalla
+   deben usar estas variables en vez de valores/hex propios.
+
+   ORDEN DE CARGA OBLIGATORIO en TODOS los JSP:
+     1) ClassControl_base.css   (este archivo)
+     2) ClassControl_theme.css  (Bootstrap + tipografía)
+     3) CSS propio de la pantalla
+
+   Ejemplo:
+     <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
+     <link rel="stylesheet" href="CSS/ClassControl_theme.css"/>
+     <link rel="stylesheet" href="CSS/ProgramasCSS.css"/>
+   ============================================================ */
+
+/* -- Título de página (unificado) ------------------------------
+   ÚNICA fuente de verdad para el título de cada pantalla.
+   NO redefinir .cc-page-title en el CSS propio de cada página. */
+.cc-page-title {
+  font-size:   1.5rem;
+  font-weight: 700;
+  color:       var(--cc-dark, #00304D);
+  line-height: 1.2;
+  margin:      0;
+}
+@media (max-width: 576px) {
+  .cc-page-title { font-size: 1.25rem; }
+}
+
+/* -- Variables globales --------------------------------------- */
+:root {
+  /* Colores de marca */
+  --cc-primary:        #38a800;
+  --cc-primary-dark:   #2c8800;
+  --cc-primary-light:  #e8f5e0;
+  --cc-primary-rgb:    56, 168, 0;
+  --cc-primary-shadow: rgba(56, 168, 0, 0.25);
+
+  --cc-dark:           #00304D;
+  --cc-dark-rgb:       0, 48, 77;
+  --cc-secondary:      #005580;
+
+  --cc-danger:         #ef4444;
+  --cc-warning:        #f59e0b;
+  --cc-info:           #3b82f6;
+
+  /* Superficies y fondos */
+  --cc-bg:             #f4f6f8;
+  --cc-surface:        #ffffff;
+  --cc-border:         #e2e8f0;
+
+  /* Texto */
+  --cc-text:           #1e293b;
+  --cc-muted:          #64748b;
+  --cc-text-main:      #1a2b12;
+  --cc-text-label:     #374a2e;
+
+  /* Layout */
+  --cc-sidebar-w:      260px;
+  --cc-header-h:       64px;
+
+  /* Tipografía */
+  --cc-font:           'DM Sans', system-ui, sans-serif;
+  --cc-font-data:      'Inter', 'DM Sans', system-ui, sans-serif;
+  --cc-font-mono:      'DM Mono', monospace;
+  --cc-fs-base:        0.9375rem;
+  --cc-fs-sm:          0.8125rem;
+  --cc-fs-lg:          1rem;
+  --cc-fs-xl:          1.75rem;
+  --cc-fs-page:        1.1rem;
+
+  /* Forma y sombras */
+  --cc-radius:         0.625rem;
+  --cc-radius-lg:      0.875rem;
+  --cc-shadow-sm:      0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --cc-shadow-md:      0 4px 12px rgba(0,0,0,.08);
+  --cc-shadow:         0 4px 12px rgba(0,0,0,.08);
+
+  /* Transición estándar */
+  --cc-transition:     0.18s ease;
+}
+
+/* -- Reset base ----------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: var(--cc-font);
+  font-size: var(--cc-fs-base);
+  color: var(--cc-text);
+  background-color: var(--cc-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+}
+
+/* -- Botones compartidos cc-btn-* ----------------------------- */
+
+/* Verde SENA - acción principal */
+.cc-btn-primary {
+  white-space: nowrap;
+  flex-shrink: 0;
+  background:    var(--cc-primary);
+  border-color:  var(--cc-primary);
+  color:         #fff;
+  font-weight:   600;
+  font-size:     .875rem;
+  padding:       .5rem 1.25rem;
+  border-radius: var(--cc-radius);
+  display:       inline-flex;
+  align-items:   center;
+  gap:           .375rem;
+  transition:    background var(--cc-transition), box-shadow var(--cc-transition), transform .12s;
+  box-shadow:    0 3px 10px var(--cc-primary-shadow);
+}
+.cc-btn-primary:hover:not(:disabled) {
+  background:   var(--cc-primary-dark);
+  border-color: var(--cc-primary-dark);
+  color:        #fff;
+  box-shadow:   0 5px 14px var(--cc-primary-shadow);
+}
+.cc-btn-primary:active { transform: scale(.97); }
+.cc-btn-primary:disabled { opacity: .65; cursor: not-allowed; }
+
+/* Azul oscuro - acción secundaria prominente (ej. Filtrar) */
+.cc-btn-dark {
+  white-space: nowrap;
+  flex-shrink: 0;
+  background:    var(--cc-dark);
+  border-color:  var(--cc-dark);
+  color:         #fff;
+  font-weight:   600;
+  font-size:     .875rem;
+  padding:       .5rem 1.25rem;
+  border-radius: var(--cc-radius);
+  display:       inline-flex;
+  align-items:   center;
+  gap:           .375rem;
+  transition:    opacity var(--cc-transition), transform .12s;
+}
+.cc-btn-dark:hover:not(:disabled) { opacity: .88; color: #fff; }
+.cc-btn-dark:active { transform: scale(.97); }
+.cc-btn-dark:disabled { opacity: .65; cursor: not-allowed; }
+
+/* Contorno - acción terciaria (ej. Cancelar, Descargar CSV) */
+.cc-btn-outline {
+  white-space: nowrap;
+  flex-shrink: 0;
+  background:    transparent;
+  border:        1.5px solid var(--cc-border);
+  color:         var(--cc-text);
+  font-weight:   500;
+  font-size:     .875rem;
+  padding:       .5rem 1.25rem;
+  border-radius: var(--cc-radius);
+  display:       inline-flex;
+  align-items:   center;
+  gap:           .375rem;
+  transition:    background var(--cc-transition), border-color var(--cc-transition);
+}
+.cc-btn-outline:hover:not(:disabled) {
+  background:    #f1f5f9;
+  border-color:  #cbd5e1;
+  color:         var(--cc-text);
+}
+.cc-btn-outline:active { transform: scale(.97); }
+.cc-btn-outline:disabled { opacity: .65; cursor: not-allowed; }
+
+/* ícono de fila (ver / editar / eliminar en tablas) */
+.cc-btn-icon {
+  background:    none;
+  border:        none;
+  padding:       .3rem .4rem;
+  border-radius: .375rem;
+  font-size:     1rem;
+  color:         var(--cc-muted);
+  cursor:        pointer;
+  transition:    color var(--cc-transition), background var(--cc-transition);
+  display:       inline-flex;
+  align-items:   center;
+  line-height:   1;
+}
+.cc-btn-icon:hover               { background: #f1f5f9; }
+.cc-btn-icon.cc-btn-icon--view:hover   { color: var(--cc-primary); }
+.cc-btn-icon.cc-btn-icon--edit:hover   { color: var(--cc-warning); }
+.cc-btn-icon.cc-btn-icon--delete:hover { color: var(--cc-danger); }
+
+/* Material Symbols - configuración base para toda la app */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ============================================================
+   AJUSTES MOVILES GLOBALES
+   - Botones de accion por fila siempre visibles (en pantallas
+   tactiles no existe hover, y quedaban ocultos/inaccesibles).
+   - Controles de DataTables apilados sin desborde horizontal.
+   - Modales con margen en pantallas pequenas.
+   Cargado por todas las paginas (base.css va primero; las reglas
+   usan !important solo donde el CSS de pantalla pisa estas).
+   ============================================================ */
+@media (max-width: 767.98px) {
+  /* Acciones ver/editar/eliminar siempre visibles */
+  .row-actions,
+  .action-btns,
+  .cc-action-group { opacity: 1 !important; }
+  .cc-table tbody tr:hover .row-actions,
+  .cc-table tbody tr:hover .action-btns,
+  tr:hover .cc-action-group { opacity: 1 !important; }
+
+  /* Objetivos tactiles comodos (minimo ~34px) */
+  .btn-edit,
+  .btn-delete,
+  .cc-btn-icon,
+  .cc-row-btn,
+  .cc-inst-btn { min-width: 34px; min-height: 34px; }
+
+  /* La tabla se desplaza dentro de su tarjeta, no en la pagina */
+  .table-responsive { -webkit-overflow-scrolling: touch; margin-bottom: 1rem; }
+
+  /* DataTables: buscar / longitud / info / paginado apilados */
+  .dataTables_wrapper .dataTables_filter,
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate {
+    text-align: left;
+    width: 100%;
+    margin-bottom: .5rem;
+  }
+  .dataTables_wrapper .dataTables_filter input {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Modales que respiran en pantallas muy pequenas */
+  .modal-dialog { margin: .5rem; max-width: calc(100vw - 1rem); }
+}

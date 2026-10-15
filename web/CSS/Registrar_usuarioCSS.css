@@ -1,0 +1,368 @@
+/* ============================================================
+   Registrar_usuarioCSS.css - ClassControl
+   Complementa Bootstrap 5 + Inicio_de_sesionCSS.css (global)
+   ============================================================ */
+
+/* -- Variables extra de esta pantalla ----------------------- */
+:root {
+  --cc-orange:        #ec5b13;
+  --cc-orange-dark:   #c94a0c;
+  --cc-orange-light:  rgba(236, 91, 19, 0.1);
+  --cc-nav-h:         62px;
+}
+
+/* -- Página -------------------------------------------------- */
+.cc-reg-body {
+  background-color: #f2f5f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* -- Navbar -------------------------------------------------- */
+.cc-navbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cc-border);
+  min-height: var(--cc-nav-h);
+  padding-block: 0;
+}
+
+.cc-brand { text-decoration: none; color: var(--cc-text-main); }
+
+.cc-brand-icon {
+  width: 38px;
+  height: 38px;
+  background: var(--cc-primary-light);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cc-primary);
+  font-size: 1.2rem;
+}
+
+.cc-brand-name {
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--cc-text-main);
+}
+
+.cc-brand-sub {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--cc-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.cc-nav-notif {
+  background: none;
+  border: none;
+  color: var(--cc-muted);
+  padding: 0.4rem 0.5rem;
+  border-radius: 50%;
+  transition: background var(--cc-transition);
+}
+.cc-nav-notif:hover { background: #f0f5ec; }
+
+.cc-nav-divider { background: var(--cc-border); height: 28px; }
+
+.cc-nav-user { cursor: default; }
+
+.cc-user-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cc-text-main);
+  line-height: 1.1;
+}
+.cc-user-role {
+  font-size: 0.7rem;
+  color: var(--cc-muted);
+}
+
+.cc-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid transparent;
+  transition: border-color var(--cc-transition);
+}
+.cc-nav-user:hover .cc-avatar { border-color: var(--cc-primary); }
+
+/* -- Main ---------------------------------------------------- */
+.cc-reg-main {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem 3rem;
+}
+
+/* -- Tarjeta principal --------------------------------------- */
+.cc-reg-card {
+  width: 100%;
+  max-width: 920px;
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid var(--cc-border);
+  overflow: hidden;
+  display: flex;
+  animation: cc-fadeUp 0.38s ease both;
+}
+
+/* -- Sidebar ------------------------------------------------- */
+.cc-reg-sidebar {
+  width: 270px;
+  flex-shrink: 0;
+  background: linear-gradient(160deg, var(--cc-primary) 0%, var(--cc-primary-dark) 100%);
+  border-right: none;
+  padding: 2.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.cc-sidebar-intro { margin-bottom: 2rem; }
+
+.cc-sidebar-big-icon {
+  font-size: 2.5rem;
+  color: rgba(255,255,255,0.9);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.cc-sidebar-intro h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.cc-sidebar-intro p {
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Steps */
+.cc-steps { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.cc-step-item { display: flex; align-items: flex-start; gap: 0.75rem; }
+
+.cc-step-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  transition: background var(--cc-transition);
+}
+
+.cc-step-active  { background: rgba(255,255,255,0.25); color: #fff; }
+.cc-step-inactive{ background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); }
+.cc-step-done    { background: rgba(255,255,255,0.25); color: #fff; }
+
+.cc-step-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+.cc-step-sub {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.65);
+  margin-top: 2px;
+}
+
+/* Quote */
+.cc-sidebar-quote { padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.2); }
+
+.cc-quote-box {
+  background: rgba(255,255,255,0.12);
+  border-left: 3px solid rgba(255,255,255,0.5);
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.75);
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* -- Sección del formulario ---------------------------------- */
+.cc-reg-form-section {
+  flex: 1;
+  padding: 2.25rem 2rem 2rem;
+  overflow-y: auto;
+}
+
+/* Títulos de sección dentro del form */
+.cc-form-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cc-muted);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.cc-form-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--cc-border);
+}
+.cc-form-section-title i { color: var(--cc-primary); font-size: 0.875rem; }
+
+/* -- Inputs (complemento a Bootstrap) ----------------------- */
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cc-text-label);
+}
+
+.form-control,
+.form-select {
+  font-size: 0.9rem;
+  border-color: var(--cc-border);
+  background: #f8faf7;
+  color: var(--cc-text-main);
+  transition: border-color var(--cc-transition), box-shadow var(--cc-transition);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--cc-primary);
+  box-shadow: 0 0 0 3px var(--cc-primary-shadow);
+  background: #fff;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220,53,69,0.1);
+}
+
+.form-control.is-valid,
+.form-select.is-valid {
+  border-color: var(--cc-primary);
+  box-shadow: 0 0 0 3px var(--cc-primary-shadow);
+}
+
+.input-group-text {
+  background: #f0f5ec;
+  border-color: var(--cc-border);
+  color: var(--cc-muted);
+}
+
+.invalid-feedback { font-size: 0.775rem; }
+
+/* Toggle contraseña (dentro de input-group) */
+.cc-toggle-pass {
+  background: #f0f5ec;
+  border-color: var(--cc-border);
+  color: var(--cc-muted);
+  cursor: pointer;
+  transition: color var(--cc-transition);
+}
+.cc-toggle-pass:hover { color: var(--cc-primary); }
+
+/* -- Barra de fortaleza -------------------------------------- */
+.cc-pw-bar {
+  height: 4px;
+  border-radius: 99px;
+  background: #dde8d5;
+  transition: background 0.3s;
+}
+.cc-pw-bar.weak   { background: #dc3545; }
+.cc-pw-bar.fair   { background: #ffc107; }
+.cc-pw-bar.strong { background: var(--cc-primary); }
+
+/* -- Botones de acción --------------------------------------- */
+.cc-btn-submit {
+  background: var(--cc-primary);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 14px var(--cc-primary-shadow);
+  transition: background var(--cc-transition), box-shadow var(--cc-transition), transform 0.08s;
+}
+.cc-btn-submit:hover:not(:disabled) {
+  background: var(--cc-primary-dark);
+  box-shadow: 0 6px 18px var(--cc-primary-shadow);
+  color: #fff;
+}
+.cc-btn-submit:active:not(:disabled) { transform: scale(0.98); }
+.cc-btn-submit:disabled { opacity: 0.7; cursor: not-allowed; color: #fff; background: var(--cc-primary); }
+
+.cc-btn-cancel {
+  background: none;
+  color: var(--cc-muted);
+  border: 1.5px solid var(--cc-border);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.7rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: background var(--cc-transition), color var(--cc-transition);
+}
+.cc-btn-cancel:hover { background: #f0f5ec; color: var(--cc-text-main); }
+
+/* -- Toast --------------------------------------------------- */
+.cc-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #1a2b12;
+  color: #fff;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+  z-index: 9999;
+  max-width: 360px;
+  transform: translateY(80px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.cc-toast.show    { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.cc-toast.success { border-left: 4px solid var(--cc-primary); }
+.cc-toast.error   { border-left: 4px solid #dc3545; }
+
+.cc-toast-icon { font-size: 1.15rem; flex-shrink: 0; }
+.cc-toast-msg { font-size: .875rem; font-weight: 500; }
+
+.cc-pw-strength { font-size: .8rem; }
+.cc-pw-bars { height: 4px; }
+
+/* -- Footer -------------------------------------------------- */
+.cc-reg-footer {
+  padding: 1.25rem;
+  font-size: 0.8125rem;
+  color: var(--cc-muted);
+  border-top: 1px solid var(--cc-border);
+}
+
+/* -- Responsive ---------------------------------------------- */
+@media (max-width: 768px) {
+  .cc-reg-card { flex-direction: column; }
+  .cc-reg-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--cc-border);
+    padding: 1.5rem;
+  }
+  .cc-sidebar-quote { display: none; }
+  .cc-reg-form-section { padding: 1.5rem; }
+}
