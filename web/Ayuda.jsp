@@ -207,7 +207,7 @@
   <script>
     // APK_URL: reemplaza por la URL de descarga de tu ultima version del APK
     // (ej: https://github.com/TU_USUARIO/TU_REPO/releases/latest/download/app.apk)
-    var APK_URL = 'https://github.com/Stivxn-n/classcontrol-apk/releases/latest/download/ClassControl.apk';
+    var APK_URL = 'https://github.com/ClassControl-ON/classcontrol-apk/releases/latest/download/ClassControl.apk';
 
     document.querySelectorAll('.cc-help-menu-item').forEach(function(btn) {
       btn.addEventListener('click', function() {
