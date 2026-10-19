@@ -8,9 +8,9 @@ public class Conexion {
     public Connection getConexion() {
         Connection con = null;
         String driver = "com.mysql.cj.jdbc.Driver";
-        String url = "jdbc:mysql://switchback.proxy.rlwy.net:12083/railway?useSSL=false&serverTimezone=UTC";
+        String url = "jdbc:mysql://iriguchi.proxy.rlwy.net:38389/railway?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
         String user = "root";
-        String password = "PyzGmfeJAtUkQEYDuKDjGjiOHuOJolDe";
+        String password = "TnMmtucoIQFXNntvIjfaIddjgqPGDKvX";
 
         try {
             Class.forName(driver);
