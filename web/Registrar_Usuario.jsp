@@ -259,7 +259,7 @@
               <div class="input-group">
                 <span class="input-group-text"><span class="material-symbols-outlined">location_on</span></span>
                 <input id="fDireccion" name="direccion" type="text" class="form-control"
-                    placeholder="Ej: Cra 10 # 20-30, Bogotá" autocomplete="street-address" maxlength="150"/>
+                    placeholder="Ej: Cra 10 # 20-30, Bogotá" autocomplete="address-line1" maxlength="150"/>
                 <div class="invalid-feedback" id="fDireccionError">Máximo 150 caracteres.</div>
               </div>
             </div>
