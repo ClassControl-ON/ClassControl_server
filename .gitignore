@@ -16,3 +16,7 @@
 
 # Agentes locales de opencode
 /.agents/
+
+# Archivos locales de IntelliJ IDEA
+/.idea/
+*.iml
