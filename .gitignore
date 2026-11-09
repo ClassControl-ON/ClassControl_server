@@ -4,10 +4,10 @@
 /build/
 /tmp/
 
-# Dependencias locales (JARs) - se resuelven en build
-/lib/
+# Dependencias del proyecto: lib/ SI se versiona para que cualquiera
+# pueda compilar solo con clonar el repositorio.
 
-# Archivos locales de NetBeans
+# Archivos locales de NetBeans (configuracion propia de cada maquina)
 /nbproject/private/
 
 # Logs de crash de JVM y otros
