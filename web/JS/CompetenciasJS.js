@@ -74,8 +74,19 @@ function programaPorId(id) {
 function llenarSelectProgramas(select, placeholder) {
   if (!select) return;
   const actual = select.value;
-  select.innerHTML = `<option value="">${placeholder}</option>` +
-    programas.map(p => `<option value="${p.id}">${escHtml(programaLabel(p))}</option>`).join('');
+
+  const inicial = document.createElement('option');
+  inicial.value = '';
+  inicial.textContent = placeholder;
+
+  const opciones = programas.map(p => {
+    const opcion = document.createElement('option');
+    opcion.value = p.id;
+    opcion.textContent = programaLabel(p) ?? '';
+    return opcion;
+  });
+
+  select.replaceChildren(inicial, ...opciones);
   if (actual) select.value = actual;
 }
 
@@ -130,13 +141,28 @@ function renderMetricas() {
     { label: 'Sin asignar',     valor: sinAsignar, borde: 'var(--cc-warning)' },
   ];
 
-  metricasEl.innerHTML = datos.map(d => `
-    <div class="col-6 col-md-4">
-      <div class="cc-metric" style="border-left-color:${d.borde}">
-        <div class="cc-metric-label">${d.label}</div>
-        <div class="cc-metric-value">${d.valor}</div>
-      </div>
-    </div>`).join('');
+  const tarjetas = datos.map(d => {
+    const col = document.createElement('div');
+    col.className = 'col-6 col-md-4';
+
+    const card = document.createElement('div');
+    card.className = 'cc-metric';
+    card.style.borderLeftColor = d.borde;
+
+    const label = document.createElement('div');
+    label.className = 'cc-metric-label';
+    label.textContent = d.label;
+
+    const valor = document.createElement('div');
+    valor.className = 'cc-metric-value';
+    valor.textContent = d.valor;
+
+    card.append(label, valor);
+    col.appendChild(card);
+    return col;
+  });
+
+  metricasEl.replaceChildren(...tarjetas);
 
   if (resumenCargaEl) {
     resumenCargaEl.textContent =
@@ -324,7 +350,7 @@ formComp.addEventListener('submit', async e => {
   e.preventDefault();
   if (!validar()) return;
 
-  const id  = compId.value ? parseInt(compId.value, 10) : null;
+  const id  = compId.value ? Number.parseInt(compId.value, 10) : null;
   const params = new URLSearchParams({
     codigo_Competencias: compCodigo.value.trim(),
     descripcion_Competencias: compDescripcion.value.trim(),
@@ -449,9 +475,9 @@ tbodyComp.addEventListener('click', e => {
   const btnVer  = e.target.closest('.btn-ver');
   const btnEdit = e.target.closest('.btn-editar');
   const btnDel  = e.target.closest('.btn-eliminar');
-  if (btnVer)  verDetalle(parseInt(btnVer.dataset.id, 10));
-  if (btnEdit) abrirModalEditar(parseInt(btnEdit.dataset.id, 10));
-  if (btnDel)  abrirModalEliminar(parseInt(btnDel.dataset.id, 10));
+  if (btnVer)  verDetalle(Number.parseInt(btnVer.dataset.id, 10));
+  if (btnEdit) abrirModalEditar(Number.parseInt(btnEdit.dataset.id, 10));
+  if (btnDel)  abrirModalEliminar(Number.parseInt(btnDel.dataset.id, 10));
 });
 
 /* ------------------------------------------
@@ -489,4 +515,4 @@ document.addEventListener('keydown', e => {
 /* ------------------------------------------
    20. INICIALIZACIÓN
 ------------------------------------------ */
-inicializarDatos();
+void inicializarDatos();

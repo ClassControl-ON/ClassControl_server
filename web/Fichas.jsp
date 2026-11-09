@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%!
   /** Escapa texto para que los datos dinamicos no se interpreten como HTML. */
   public static String escaparHtml(Object valor) {
@@ -58,10 +58,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 
   <!-- -- Bootstrap 5.3 -- -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
 
   <!-- -- DataTables + Bootstrap 5 skin -- -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css"/>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" integrity="sha384-ok3J6xA9oQqai5C9ytYveFsBeKgoGk4T+NExsr6hoIKjZdv9SJcmx2mafwUWRNf9" crossorigin="anonymous"/>
 
   <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
   <link rel="stylesheet" href="CSS/ClassControl_theme.css"/>
@@ -113,6 +113,7 @@
                 <span class="input-group-text bg-transparent border-end-0 cc-search-addon">
                   <span class="material-symbols-outlined">search</span>
                 </span>
+                <label class="visually-hidden" for="search-input">Buscar ficha</label>
                 <input id="search-input" type="search"
                        class="form-control border-start-0 ps-0 cc-search-input"
                        placeholder="<fmt:message bundle="${i18n}" key="fichas.placeholder.buscar"/>"
@@ -122,6 +123,7 @@
 
             <!-- Estado -->
             <div class="col-6 col-sm-4 col-lg-2">
+              <label class="visually-hidden" for="filter-estado">Filtrar por estado</label>
               <select id="filter-estado" class="form-select form-select-sm cc-filter-select">
                 <option value="">Estado: Todos</option>
               </select>
@@ -129,6 +131,7 @@
 
             <!-- Modalidad -->
             <div class="col-6 col-sm-4 col-lg-2">
+              <label class="visually-hidden" for="filter-modalidad">Filtrar por modalidad</label>
               <select id="filter-modalidad" class="form-select form-select-sm cc-filter-select">
                 <option value="">Modalidad: Todas</option>
               </select>
@@ -136,6 +139,7 @@
 
             <!-- Sede -->
             <div class="col-6 col-sm-4 col-lg-2">
+              <label class="visually-hidden" for="filter-sede">Filtrar por sede</label>
               <select id="filter-sede" class="form-select form-select-sm cc-filter-select">
                 <option value="">Sede: Todas</option>
               </select>
@@ -197,7 +201,7 @@
         <h5 class="modal-title" id="form-modal-title">
           <span class="material-symbols-outlined me-2">note_add</span><fmt:message bundle="${i18n}" key="fichas.btn.nueva"/>
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
 
       <form id="ficha-form" action="RegistrarFicha" method="POST" novalidate>
@@ -314,7 +318,7 @@
         <h5 class="modal-title" id="detail-modal-title">
           <span style="color:var(--cc-primary)" class="material-symbols-outlined me-2">description</span><fmt:message bundle="${i18n}" key="fichas.detalle.titulo"/>
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
 
       <div class="modal-body" id="detail-content">
@@ -377,10 +381,10 @@
   window.ccPuedeEscribirFichas  = <%= (sesRol != null && sesRol == 3) %>;
   window.ccPuedeEliminarFichas  = <%= (sesRol != null && sesRol == 3) %>;
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" integrity="sha384-Udt767MMeKelGRBxaCfxX88YDLbViYdQ7T/gkRoB197Jf+OviZ+lsaRAOpS/MIjf" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js" integrity="sha384-PgPBH0hy6DTJwu7pTf6bkRqPlf/+pjUBExpr/eIfzszlGYFlF9Wi9VTAJODPhgCO" crossorigin="anonymous"></script>
 <!-- JS en la MISMA carpeta que el HTML -->
 <script src="JS/ClassControl_ui.js"></script>
 <script src="JS/FichasJS.js"></script>

@@ -11,6 +11,17 @@
 
   const DEFAULT_AVATAR = 'https://lh3.googleusercontent.com/aida-public/AB6AXuA9RbNayg0uD8d6VrgYgLzyUvBjkd-_MJABU6ZwO_jsdoNcOQwz5eCvECVCTdXf42AMADF3cYVLr_d1HbQciAo3voDlwETXof2nAg_kFusorx-GrT8WnDhVg1C4ieO8WKAXslFS38MmKubNEgVu-zob64Q9DI9187gBtqT8q6aG66yzFaL_z1kJvgSTgoMLVf5YyL0MgTLbRNxNEv6NzjULrL5rZUoke3duGXAYyCL-c6rnVBdYqiwgH_htpIshyHpSC823tun09ys';
 
+  /** Valida el formato básico de un correo sin expresiones regulares. */
+  function esCorreoValido(valor) {
+    const correo = String(valor || '').trim();
+    const arroba = correo.indexOf('@');
+    if (arroba <= 0 || arroba !== correo.lastIndexOf('@') || arroba === correo.length - 1) return false;
+    if (/\s/.test(correo)) return false;
+    const dominio = correo.slice(arroba + 1);
+    const punto = dominio.lastIndexOf('.');
+    return punto > 0 && punto < dominio.length - 1;
+  }
+
   // Los datos de identidad (nombres, apellidos, rol, cédula, correo,
   // teléfono, profesión) SIEMPRE vienen del servidor (/api/MiPerfil).
   // En localStorage solo se guardan preferencias locales del navegador
@@ -158,8 +169,7 @@
       valid = false;
     }
 
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRe.test(email)) {
+    if (!esCorreoValido(email)) {
       document.getElementById('fieldEmail').classList.add('is-invalid');
       valid = false;
     }
@@ -268,23 +278,46 @@
     ];
 
     const container = document.getElementById('notificationPrefs');
-    container.innerHTML = items.map((item) => {
-      const checked = notifications[item.key] ? 'checked' : '';
-      return `
-        <div class="col-12 col-md-6">
-          <div class="border rounded-3 p-3 h-100 bg-light-subtle">
-            <div class="d-flex justify-content-between align-items-start gap-2">
-              <div>
-                <p class="fw-semibold mb-1 text-brand-blue">${item.label}</p>
-                <p class="text-muted small mb-0">${item.hint}</p>
-              </div>
-              <div class="form-check form-switch m-0">
-                <input class="form-check-input notif-switch" type="checkbox" role="switch" data-key="${item.key}" ${checked}>
-              </div>
-            </div>
-          </div>
-        </div>`;
-    }).join('');
+    const tarjetas = items.map((item) => {
+      const col = document.createElement('div');
+      col.className = 'col-12 col-md-6';
+
+      const card = document.createElement('div');
+      card.className = 'border rounded-3 p-3 h-100 bg-light-subtle';
+
+      const fila = document.createElement('div');
+      fila.className = 'd-flex justify-content-between align-items-start gap-2';
+
+      const textos = document.createElement('div');
+
+      const label = document.createElement('p');
+      label.className = 'fw-semibold mb-1 text-brand-blue';
+      label.textContent = item.label;
+
+      const hint = document.createElement('p');
+      hint.className = 'text-muted small mb-0';
+      hint.textContent = item.hint;
+
+      textos.append(label, hint);
+
+      const check = document.createElement('div');
+      check.className = 'form-check form-switch m-0';
+
+      const input = document.createElement('input');
+      input.className = 'form-check-input notif-switch';
+      input.type = 'checkbox';
+      input.setAttribute('role', 'switch');
+      input.dataset.key = item.key;
+      input.checked = Boolean(notifications[item.key]);
+
+      check.appendChild(input);
+      fila.append(textos, check);
+      card.appendChild(fila);
+      col.appendChild(card);
+      return col;
+    });
+
+    container.replaceChildren(...tarjetas);
 
     document.querySelectorAll('.notif-switch').forEach((input) => {
       input.addEventListener('change', (e) => {
@@ -416,7 +449,7 @@
       buildNotifications();
       resetFormValidation(profileForm);
       showToast('Preferencias restablecidas. Cargando tus datos...', 'info');
-      cargarPerfilServidor();
+      void cargarPerfilServidor();
     });
 
     document.getElementById('newPassword').addEventListener('input', updatePasswordStrength);
@@ -508,6 +541,6 @@
     initAccessTable();
     bindEvents();
     updatePasswordStrength();
-    cargarPerfilServidor();
+    void cargarPerfilServidor();
   });
 })();

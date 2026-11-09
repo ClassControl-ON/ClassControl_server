@@ -53,6 +53,17 @@ function clearField(fieldId) {
   field.classList.remove('is-invalid', 'is-valid');
 }
 
+/** Valida el formato básico de un correo sin expresiones regulares. */
+function esCorreoValido(valor) {
+  const correo = String(valor || '').trim();
+  const arroba = correo.indexOf('@');
+  if (arroba <= 0 || arroba !== correo.lastIndexOf('@') || arroba === correo.length - 1) return false;
+  if (/\s/.test(correo)) return false;
+  const dominio = correo.slice(arroba + 1);
+  const punto = dominio.lastIndexOf('.');
+  return punto > 0 && punto < dominio.length - 1;
+}
+
 /* ============================================================
    Reglas de validación
    ============================================================ */
@@ -72,7 +83,7 @@ const VALIDATORS = {
   },
   fNivelEducativo: v => v !== ''                                 ? null : 'Seleccione un nivel educativo',
   fProfesion: v => v.trim().length <= 100                        ? null : 'Máximo 100 caracteres',
-  fEmail:     v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? null : 'Correo inválido',
+  fEmail:     v => esCorreoValido(v)                              ? null : 'Correo inválido',
   fTelefono:  v => /^[0-9\s+\-]{7,15}$/.test(v.trim())         ? null : 'Teléfono inválido',
   fRol:       v => v !== ''                                      ? null : 'Seleccione un rol',
   fUsername:  v => /^[a-z0-9_]{4,20}$/.test(v.trim())          ? null : '4-20 caracteres: letras minúsculas, números o _',

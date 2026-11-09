@@ -37,9 +37,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
   <!-- Bootstrap 5.3 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" rel="stylesheet" />
   <!-- DataTables Bootstrap 5 -->
-  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" integrity="sha384-ok3J6xA9oQqai5C9ytYveFsBeKgoGk4T+NExsr6hoIKjZdv9SJcmx2mafwUWRNf9" crossorigin="anonymous" rel="stylesheet" />
 
   <!-- Shared base styles -->
   <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
@@ -73,7 +73,7 @@
 
       <div class="cc-header-right">
         <!-- <fmt:message bundle="${i18n}" key="common.btn.exportar"/> -->
-        <button id="btn-descargar" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+        <button id="btn-descargar" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" aria-label="Exportar">
           <span class="material-symbols-outlined" style="font-size:1rem">file_download</span>
           <span class="d-none d-md-inline"><fmt:message bundle="${i18n}" key="common.btn.exportar"/></span>
         </button>
@@ -108,18 +108,21 @@
                 <span class="input-group-text bg-transparent border-end-0">
                   <span class="material-symbols-outlined cc-icon-sm">search</span>
                 </span>
+                <label class="visually-hidden" for="filtro-busqueda">Buscar instructor</label>
                 <input id="filtro-busqueda" type="search" class="form-control border-start-0 ps-0"
                        placeholder="Buscar por nombre, apellido o cédula…" autocomplete="off" />
               </div>
             </div>
             <!-- Rol -->
             <div class="col-6 col-md-2">
+              <label class="visually-hidden" for="filtro-rol">Filtrar por rol</label>
               <select id="filtro-rol" class="form-select">
                 <option value="">Todos los Roles</option>
               </select>
             </div>
             <!-- Estado -->
             <div class="col-6 col-md-2">
+              <label class="visually-hidden" for="filtro-estado">Filtrar por estado</label>
               <select id="filtro-estado" class="form-select">
                 <option value="">Estado</option>
                 <option value="Activo">Activo</option>
@@ -314,10 +317,10 @@
   // instructor (1) solo visualizan datos de contacto.
   window.ccSoloLectura = <%= (sesRol == null || sesRol != 3) %>;
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" integrity="sha384-Udt767MMeKelGRBxaCfxX88YDLbViYdQ7T/gkRoB197Jf+OviZ+lsaRAOpS/MIjf" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js" integrity="sha384-PgPBH0hy6DTJwu7pTf6bkRqPlf/+pjUBExpr/eIfzszlGYFlF9Wi9VTAJODPhgCO" crossorigin="anonymous"></script>
 <script src="JS/ClassControl_ui.js"></script>
 <script src="JS/InstructoresJS.js"></script>
   <script src="JS/ClassControl_theme.js"></script>

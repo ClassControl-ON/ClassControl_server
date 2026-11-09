@@ -1,4 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%!
   /** Escapa texto para que los datos dinamicos no se interpreten como HTML. */
   public static String escaparHtml(Object valor) {
@@ -21,8 +21,8 @@
   <link rel="icon" type="image/png" href="img/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" integrity="sha384-ok3J6xA9oQqai5C9ytYveFsBeKgoGk4T+NExsr6hoIKjZdv9SJcmx2mafwUWRNf9" crossorigin="anonymous" rel="stylesheet" />
   <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
   <link rel="stylesheet" href="CSS/ClassControl_theme.css" />
   <link rel="stylesheet" href="CSS/ClassControl_sidebar.css" />
@@ -92,6 +92,7 @@
           <span class="input-group-text bg-transparent border-end-0">
             <span class="material-symbols-outlined cc-icon-sm">search</span>
           </span>
+          <label class="visually-hidden" for="search-input">Buscar actividad o ficha</label>
           <input id="search-input" type="search"
                  class="form-control border-start-0 ps-0"
                  placeholder="Buscar actividad, ficha…"
@@ -113,37 +114,37 @@
         <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
           <span class="material-symbols-outlined me-1" style="font-size:1rem;vertical-align:middle">check_circle</span>
           Ficha registrada exitosamente.
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
       <% } else if ("actividad".equals(flashOk)) { %>
         <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
           <span class="material-symbols-outlined me-1" style="font-size:1rem;vertical-align:middle">check_circle</span>
           Actividad registrada exitosamente.
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
       <% } else if ("ambiente".equals(flashOk)) { %>
         <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
           <span class="material-symbols-outlined me-1" style="font-size:1rem;vertical-align:middle">check_circle</span>
           Ambiente registrado exitosamente.
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
       <% } else if (flashOk != null) { %>
         <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
           <span class="material-symbols-outlined me-1" style="font-size:1rem;vertical-align:middle">check_circle</span>
           Registro guardado exitosamente.
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
       <% } else if ("conflicto".equals(flashErr)) { %>
         <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
           <span class="material-symbols-outlined me-1" style="font-size:1rem;vertical-align:middle">event_busy</span>
           Ya existe una programación para ese ambiente, día y hora. Elige otro horario o ambiente.
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
       <% } else if (flashErr != null) { %>
         <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
           <span class="material-symbols-outlined me-1" style="font-size:1rem;vertical-align:middle">error</span>
           Ocurrió un error al guardar. Por favor intenta de nuevo.
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
       <% } %>
 
@@ -208,6 +209,7 @@
           <div class="cc-widget-card h-100">
             <div class="cc-widget-header">
               <h4 class="cc-widget-title">Ocupación de Ambientes</h4>
+              <label class="visually-hidden" for="chart-select">Periodo de ocupación de ambientes</label>
               <select id="chart-select" class="form-select form-select-sm cc-widget-select">
                 <option>Esta semana</option>
                 <option>Hoy</option>
@@ -281,15 +283,15 @@
 <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
 <div class="d-none" id="catalogo-option-sources" aria-hidden="true">
-  <select data-options="programas"></select>
-  <select data-options="competencias"></select>
-  <select data-options="usuarios"></select>
-  <select data-options="fichas"></select>
-  <select data-options="ambientes"></select>
-  <select data-options="actividades"></select>
-  <select data-options="trimestres"></select>
-  <select data-options="estados"></select>
-  <select data-options="tipoEstado"></select>
+  <select data-options="programas" aria-label="Programas"></select>
+  <select data-options="competencias" aria-label="Competencias"></select>
+  <select data-options="usuarios" aria-label="Usuarios"></select>
+  <select data-options="fichas" aria-label="Fichas"></select>
+  <select data-options="ambientes" aria-label="Ambientes"></select>
+  <select data-options="actividades" aria-label="Actividades"></select>
+  <select data-options="trimestres" aria-label="Trimestres"></select>
+  <select data-options="estados" aria-label="Estados"></select>
+  <select data-options="tipoEstado" aria-label="Tipos de estado"></select>
 </div>
 <!-- MODAL: Elegir registro a crear -->
 <div class="modal fade" id="modal-crear-registro" tabindex="-1"
@@ -308,6 +310,7 @@
           <span class="input-group-text bg-transparent border-end-0">
             <span class="material-symbols-outlined cc-icon-sm">search</span>
           </span>
+          <label class="visually-hidden" for="create-search">Buscar tabla</label>
           <input id="create-search" type="search" class="form-control border-start-0 ps-0"
                  placeholder="Buscar tabla..." autocomplete="off" />
         </div>
@@ -624,11 +627,11 @@
 
 
 <!-- -------------- SCRIPTS -------------- -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" integrity="sha384-Udt767MMeKelGRBxaCfxX88YDLbViYdQ7T/gkRoB197Jf+OviZ+lsaRAOpS/MIjf" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js" integrity="sha384-PgPBH0hy6DTJwu7pTf6bkRqPlf/+pjUBExpr/eIfzszlGYFlF9Wi9VTAJODPhgCO" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-JUh163oCRItcbPme8pYnROHQMC6fNKTBWtRG3I3I0erJkzNgL7uxKlNwcrcFKeqF" crossorigin="anonymous"></script>
 <script src="JS/ClassControl_ui.js"></script>
 <script>
   // Solo Administrador (3) gestiona registros; el resto solo consulta.

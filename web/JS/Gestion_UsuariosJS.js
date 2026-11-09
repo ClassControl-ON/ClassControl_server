@@ -26,6 +26,17 @@ function getInitials(name) {
   return name.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
 }
 
+/** Valida el formato básico de un correo sin expresiones regulares. */
+function esCorreoValido(valor) {
+  const correo = String(valor || '').trim();
+  const arroba = correo.indexOf('@');
+  if (arroba <= 0 || arroba !== correo.lastIndexOf('@') || arroba === correo.length - 1) return false;
+  if (/\s/.test(correo)) return false;
+  const dominio = correo.slice(arroba + 1);
+  const punto = dominio.lastIndexOf('.');
+  return punto > 0 && punto < dominio.length - 1;
+}
+
 function nombreCompleto(u) {
   return [u.nombres, u.apellidos].filter(Boolean).join(' ');
 }
@@ -50,7 +61,7 @@ function actualizarVisibilidadFicha() {
 }
 
 function avatarHTML(u) {
-  return `<div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width:36px;height:36px;background:#e8f5e0;color:#38a800;font-weight:700;">${getInitials(nombreCompleto(u))}</div>`;
+  return `<div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width:36px;height:36px;background:#e8f5e0;color:#38a800;font-weight:700;">${ClassControl.escapeHtml(getInitials(nombreCompleto(u)))}</div>`;
 }
 
 /** Número de ficha del usuario (id → codigo_ficha) o null si no tiene. */
@@ -218,8 +229,7 @@ function validateForm() {
   if (!identificacion) { setInvalid('fieldIdentificacion'); valid = false; }
   if (!tipoDoc) { setInvalid('fieldTipoDoc'); valid = false; }
 
-  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRe.test(email)) {
+  if (!esCorreoValido(email)) {
     setInvalid('fieldEmail', 'Correo electrónico no válido.');
     valid = false;
   } else {
@@ -258,15 +268,28 @@ function validateForm() {
   return valid;
 }
 
+function crearOpcion(valor, texto) {
+  const opcion = document.createElement('option');
+  opcion.value = valor;
+  opcion.textContent = texto;
+  return opcion;
+}
+
 function llenarSelect(selectEl, items, placeholder) {
-  selectEl.innerHTML = `<option value="">${placeholder}</option>` +
-    items.map(i => `<option value="${i.id}">${ClassControl.escapeHtml(i.descripcion)}</option>`).join('');
+  if (!selectEl) return;
+  selectEl.replaceChildren(
+    crearOpcion('', placeholder),
+    ...items.map(i => crearOpcion(i.id, i.descripcion))
+  );
 }
 
 function llenarFiltroRoles() {
   const filterRole = document.getElementById('filterRole');
-  filterRole.innerHTML = '<option value="">Todos los roles</option>' +
-    roles.map(r => `<option value="${r.id}">${ClassControl.escapeHtml(r.descripcion)}</option>`).join('');
+  if (!filterRole) return;
+  filterRole.replaceChildren(
+    crearOpcion('', 'Todos los roles'),
+    ...roles.map(r => crearOpcion(r.id, r.descripcion))
+  );
 }
 
 /** El filtro de fichas usa "Ficha {codigo}" como texto. */
@@ -274,8 +297,10 @@ function llenarFiltroFichas() {
   const sel = document.getElementById('filterFicha');
   if (!sel) return;
   const actual = sel.value;
-  sel.innerHTML = '<option value="">Todas las fichas</option>' +
-    fichas.map(f => `<option value="${f.id}">Ficha ${ClassControl.escapeHtml(f.codigo)}</option>`).join('');
+  sel.replaceChildren(
+    crearOpcion('', 'Todas las fichas'),
+    ...fichas.map(f => crearOpcion(f.id, `Ficha ${f.codigo}`))
+  );
   sel.value = actual;
 }
 
@@ -450,8 +475,10 @@ async function cargarCatalogos() {
 function llenarSelectFichas() {
   const sel = document.getElementById('fieldFicha');
   if (!sel) return;
-  sel.innerHTML = '<option value="">Sin asignar</option>' +
-    fichas.map(f => `<option value="${f.id}">Ficha ${ClassControl.escapeHtml(f.codigo)}</option>`).join('');
+  sel.replaceChildren(
+    crearOpcion('', 'Sin asignar'),
+    ...fichas.map(f => crearOpcion(f.id, `Ficha ${f.codigo}`))
+  );
 }
 
 async function inicializarDatos() {
@@ -552,5 +579,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initDataTable();
   bindEvents();
   initCharts();
-  inicializarDatos();
+  void inicializarDatos();
 });

@@ -33,7 +33,13 @@ function marcar(input, errorEl, invalido, mensaje) {
 }
 
 function esCorreoValido(val) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+  const correo = String(val || '').trim();
+  const arroba = correo.indexOf('@');
+  if (arroba <= 0 || arroba !== correo.lastIndexOf('@') || arroba === correo.length - 1) return false;
+  if (/\s/.test(correo)) return false;
+  const dominio = correo.slice(arroba + 1);
+  const punto = dominio.lastIndexOf('.');
+  return punto > 0 && punto < dominio.length - 2;
 }
 
 function validateEmail() {
@@ -130,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     if (!validateEmail()) return;
     if (!validateDocumento()) return;
-    enviarSolicitud();
+    void enviarSolicitud();
   });
 
   if (resendLink) resendLink.addEventListener('click', () => {
@@ -138,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Espera unos segundos antes de reenviar.', 'error');
       return;
     }
-    enviarSolicitud();
+    void enviarSolicitud();
   });
 
   if (email) {

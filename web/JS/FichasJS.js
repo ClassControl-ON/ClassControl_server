@@ -72,15 +72,37 @@ function estadoBadge(id) {
 function llenarSelect(select, lista, placeholder, campoTexto) {
   if (!select) return;
   const actual = select.value;
-  select.innerHTML = `<option value="">${placeholder}</option>` +
-    lista.map(item => `<option value="${item.id}">${ClassControl.escapeHtml(item[campoTexto])}</option>`).join('');
+
+  const inicial = document.createElement('option');
+  inicial.value = '';
+  inicial.textContent = placeholder;
+
+  const opciones = lista.map(item => {
+    const opcion = document.createElement('option');
+    opcion.value = item.id;
+    opcion.textContent = item[campoTexto];
+    return opcion;
+  });
+
+  select.replaceChildren(inicial, ...opciones);
   if (actual) select.value = actual;
 }
 
 function llenarFiltro(select, lista, placeholder, campoTexto) {
   if (!select) return;
-  select.innerHTML = `<option value="">${placeholder}</option>` +
-    lista.map(item => `<option value="${ClassControl.escapeHtml(item[campoTexto])}">${ClassControl.escapeHtml(item[campoTexto])}</option>`).join('');
+
+  const inicial = document.createElement('option');
+  inicial.value = '';
+  inicial.textContent = placeholder;
+
+  const opciones = lista.map(item => {
+    const opcion = document.createElement('option');
+    opcion.value = item[campoTexto];
+    opcion.textContent = item[campoTexto];
+    return opcion;
+  });
+
+  select.replaceChildren(inicial, ...opciones);
 }
 
 
@@ -181,7 +203,7 @@ $(document).ready(function () {
   });
 
   bindFormEvents();
-  inicializarDatos();
+  void inicializarDatos();
 });
 
 
@@ -201,7 +223,7 @@ function rowHTML(f) {
           </button>` : '';
   return `
     <tr data-id="${f.id}">
-      <td class="cc-ficha-codigo">${f.codigo}</td>
+      <td class="cc-ficha-codigo">${ClassControl.escapeHtml(f.codigo)}</td>
       <td>
         <div class="cc-prog-name">${ClassControl.escapeHtml(programaNombre(f.programaId))}</div>
         <div class="cc-prog-meta">${ClassControl.escapeHtml(nivelNombre(f.nivelFormacionId))} - ${ClassControl.escapeHtml(sedeNombre(f.sedeId))}</div>
@@ -385,7 +407,7 @@ function openDetail(id) {
   detailContent.innerHTML = `
     <div class="cc-detail-row">
       <span class="cc-detail-label">Código</span>
-      <span class="cc-detail-value cc-mono">${f.codigo}</span>
+      <span class="cc-detail-value cc-mono">${ClassControl.escapeHtml(f.codigo)}</span>
     </div>
     <div class="cc-detail-row">
       <span class="cc-detail-label">Programa de Formación</span>
@@ -483,26 +505,43 @@ function showToast(message, type = 'success') {
   const container = document.getElementById('toast-container');
   if (!container) return;
 
-  const id   = 'toast-' + Date.now();
   const icon = type === 'success' ? 'check_circle' : 'error';
   const iconColorClass = type === 'success' ? 'text-success' : 'text-danger';
 
-  container.insertAdjacentHTML('beforeend', `
-    <div id="${id}" class="toast align-items-center border-0 shadow-sm" role="alert">
-      <div class="d-flex">
-        <div class="toast-body d-flex align-items-center gap-2"
-             style="font-family:var(--cc-font);font-size:.875rem">
-          <span class="material-symbols-outlined ${iconColorClass}">${icon}</span>
-          <span>${message}</span>
-        </div>
-        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
-      </div>
-    </div>`);
+  const toastEl = document.createElement('div');
+  toastEl.className = 'toast align-items-center border-0 shadow-sm';
+  toastEl.setAttribute('role', 'alert');
 
-  const el    = document.getElementById(id);
-  const toast = new bootstrap.Toast(el, { delay: 3500 });
+  const flex = document.createElement('div');
+  flex.className = 'd-flex';
+
+  const body = document.createElement('div');
+  body.className = 'toast-body d-flex align-items-center gap-2';
+  body.style.fontFamily = 'var(--cc-font)';
+  body.style.fontSize = '.875rem';
+
+  const iconEl = document.createElement('span');
+  iconEl.className = `material-symbols-outlined ${iconColorClass}`;
+  iconEl.textContent = icon;
+
+  const messageEl = document.createElement('span');
+  messageEl.textContent = message;
+
+  body.append(iconEl, messageEl);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'btn-close me-2 m-auto';
+  closeBtn.setAttribute('data-bs-dismiss', 'toast');
+  closeBtn.setAttribute('aria-label', 'Cerrar');
+
+  flex.append(body, closeBtn);
+  toastEl.appendChild(flex);
+  container.appendChild(toastEl);
+
+  const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
   toast.show();
-  el.addEventListener('hidden.bs.toast', () => el.remove());
+  toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
 }
 
 

@@ -81,14 +81,22 @@ function resultadoLabel(id) {
 function llenarSelectResultados(select, placeholder) {
   if (!select) return;
   const actual = select.value;
-  const initial = `<option value="">${placeholder}</option>`;
+
+  const inicial = document.createElement('option');
+  inicial.value = '';
+  inicial.textContent = placeholder;
+
   const opciones = resultados.map(r => {
     const label = [r.codigo, r.descripcion]
       .filter(v => v != null && String(v).trim() !== '')
       .join(' - ');
-    return `<option value="${r.id}">${escHtml(label)}</option>`;
-  }).join('');
-  select.innerHTML = initial + opciones;
+    const opcion = document.createElement('option');
+    opcion.value = r.id;
+    opcion.textContent = label;
+    return opcion;
+  });
+
+  select.replaceChildren(inicial, ...opciones);
   if (actual && [...select.options].some(o => o.value === String(actual))) select.value = actual;
 }
 
@@ -125,7 +133,7 @@ async function inicializarDatos() {
 ------------------------------------------ */
 function filtrarActividades() {
   const busq  = filtroBusqueda.value.trim().toLowerCase();
-  const ficha = filtroFicha.value ? parseInt(filtroFicha.value, 10) : null;
+  const ficha = filtroFicha.value ? Number.parseInt(filtroFicha.value, 10) : null;
 
   return actividades.filter(a =>
     (!busq  || a.nombre.toLowerCase().includes(busq)
@@ -444,9 +452,9 @@ tbodyActividades.addEventListener('click', e => {
   const btnVer  = e.target.closest('.btn-ver');
   const btnEdit = e.target.closest('.btn-editar');
   const btnDel  = e.target.closest('.btn-eliminar');
-  if (btnVer)  verDetalle(parseInt(btnVer.dataset.id, 10));
-  if (btnEdit) abrirModalEditar(parseInt(btnEdit.dataset.id, 10));
-  if (btnDel)  abrirModalEliminar(parseInt(btnDel.dataset.id, 10));
+  if (btnVer)  verDetalle(Number.parseInt(btnVer.dataset.id, 10));
+  if (btnEdit) abrirModalEditar(Number.parseInt(btnEdit.dataset.id, 10));
+  if (btnDel)  abrirModalEliminar(Number.parseInt(btnDel.dataset.id, 10));
 });
 
 /* ------------------------------------------
@@ -484,4 +492,4 @@ document.addEventListener('keydown', e => {
 /* ------------------------------------------
    18. INICIALIZACIÓN
 ------------------------------------------ */
-inicializarDatos();
+void inicializarDatos();

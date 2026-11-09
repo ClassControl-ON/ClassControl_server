@@ -36,9 +36,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 
   <!-- Bootstrap 5.3 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" rel="stylesheet"/>
   <!-- DataTables Bootstrap 5 -->
-  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" integrity="sha384-ok3J6xA9oQqai5C9ytYveFsBeKgoGk4T+NExsr6hoIKjZdv9SJcmx2mafwUWRNf9" crossorigin="anonymous" rel="stylesheet"/>
 
   <!-- ClassControl CSS -->
   <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
@@ -174,7 +174,7 @@
           </div>
           <div class="card-body d-flex align-items-center justify-content-center">
             <canvas id="ambientesChart" style="max-height:300px"
-              aria-label="Gráfica de ocupación de ambientes" role="img"></canvas>
+              aria-label="Gráfica de ocupación de ambientes"></canvas>
           </div>
         </div>
       </div>
@@ -280,19 +280,19 @@
       <div class="modal-body">
         <div class="row g-3">
           <div class="col-12 col-md-6">
-            <label class="cc-label">Nombre / Código</label>
+            <span class="cc-label d-block">Nombre / Código</span>
             <p id="view-nombre" class="form-control-static fw-semibold mb-0">-</p>
           </div>
           <div class="col-12 col-md-6">
-            <label class="cc-label">Sede</label>
+            <span class="cc-label d-block">Sede</span>
             <p id="view-sede" class="form-control-static fw-semibold mb-0">-</p>
           </div>
           <div class="col-12 col-md-6">
-            <label class="cc-label">Capacidad</label>
+            <span class="cc-label d-block">Capacidad</span>
             <p id="view-capacidad" class="form-control-static fw-semibold mb-0">-</p>
           </div>
           <div class="col-12 col-md-6">
-            <label class="cc-label">Estado</label>
+            <span class="cc-label d-block">Estado</span>
             <p id="view-estado" class="form-control-static fw-semibold mb-0">-</p>
           </div>
         </div>
@@ -315,11 +315,11 @@
 
 
 <!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" integrity="sha384-Udt767MMeKelGRBxaCfxX88YDLbViYdQ7T/gkRoB197Jf+OviZ+lsaRAOpS/MIjf" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js" integrity="sha384-PgPBH0hy6DTJwu7pTf6bkRqPlf/+pjUBExpr/eIfzszlGYFlF9Wi9VTAJODPhgCO" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-JUh163oCRItcbPme8pYnROHQMC6fNKTBWtRG3I3I0erJkzNgL7uxKlNwcrcFKeqF" crossorigin="anonymous"></script>
 <script src="JS/ClassControl_ui.js"></script>
 <script>
   // Solo el Administrador (3) gestiona ambientes; el resto solo visualiza.

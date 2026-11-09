@@ -25,10 +25,10 @@
 
   <link rel="icon" type="image/png" href="img/logo.png" />
   <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" rel="stylesheet" />
 
   <!-- DataTables + Bootstrap 5 theme -->
-  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" integrity="sha384-ok3J6xA9oQqai5C9ytYveFsBeKgoGk4T+NExsr6hoIKjZdv9SJcmx2mafwUWRNf9" crossorigin="anonymous" rel="stylesheet" />
 
   <!-- Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
@@ -59,7 +59,7 @@
     <!-- Header -->
     <header class="cc-header">
       <div class="d-flex align-items-center gap-2">
-        <button class="btn btn-sm d-lg-none" id="sidebar-toggle">
+        <button class="btn btn-sm d-lg-none" id="sidebar-toggle" aria-label="Abrir menú">
           <span class="material-symbols-outlined">menu</span>
         </button>
         <h1 class="cc-page-title mb-0"><fmt:message bundle="${i18n}" key="programacion.header.title"/></h1>
@@ -71,6 +71,9 @@
           <span class="input-group-text bg-transparent border-end-0">
             <span class="material-symbols-outlined cc-icon-sm">search</span>
           </span>
+          <label class="visually-hidden" for="search-input">
+            <fmt:message bundle="${i18n}" key="programacion.placeholder.buscar"/>
+          </label>
           <input id="search-input" type="text"
                  class="form-control border-start-0"
                  placeholder="<fmt:message bundle="${i18n}" key="programacion.placeholder.buscar"/>" />
@@ -369,10 +372,10 @@
 </div>
 
 <!-- ── Scripts ── -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" integrity="sha384-Udt767MMeKelGRBxaCfxX88YDLbViYdQ7T/gkRoB197Jf+OviZ+lsaRAOpS/MIjf" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js" integrity="sha384-PgPBH0hy6DTJwu7pTf6bkRqPlf/+pjUBExpr/eIfzszlGYFlF9Wi9VTAJODPhgCO" crossorigin="anonymous"></script>
 <script src="JS/ClassControl_ui.js"></script>
 <script>
   // Solo el Administrador (3) crea/edita/elimina programación.

@@ -795,14 +795,14 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    cargarDashboard();
-    cargarCatalogos();
+    void cargarDashboard();
+    void cargarCatalogos();
 
     /* Ocupación de ambientes según el período elegido */
     const selectPeriodo = document.getElementById("chart-select");
     const cargarOcupacionActual = () => {
       const periodo = selectPeriodo ? selectPeriodo.value : "Esta semana";
-      cargarOcupacion(periodo);
+      void cargarOcupacion(periodo);
     };
     if (selectPeriodo) {
       selectPeriodo.addEventListener("change", cargarOcupacionActual);

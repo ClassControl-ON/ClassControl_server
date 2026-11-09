@@ -32,6 +32,17 @@ function esRolAprendiz(descripcion) {
   return (descripcion || '').trim().toLowerCase() === 'aprendiz';
 }
 
+/** Valida el formato básico de un correo sin expresiones regulares. */
+function esCorreoValido(valor) {
+  const correo = String(valor || '').trim();
+  const arroba = correo.indexOf('@');
+  if (arroba <= 0 || arroba !== correo.lastIndexOf('@') || arroba === correo.length - 1) return false;
+  if (/\s/.test(correo)) return false;
+  const dominio = correo.slice(arroba + 1);
+  const punto = dominio.lastIndexOf('.');
+  return punto > 0 && punto < dominio.length - 1;
+}
+
 function instructores() {
   // "Personal" visible en esta pantalla: todo usuario cuyo rol no sea Aprendiz.
   const idsExcluidos = new Set(roles.filter(r => esRolAprendiz(r.descripcion)).map(r => r.id));
@@ -99,7 +110,7 @@ $(document).ready(function () {
     document.getElementById('modal-titulo').textContent = 'Nuevo Instructor';
   });
 
-  inicializarDatos();
+  void inicializarDatos();
 });
 
 async function inicializarDatos() {
@@ -110,6 +121,23 @@ async function inicializarDatos() {
     console.error(err);
     showToast('No se pudieron cargar los datos desde el servidor.', 'error');
   }
+}
+
+function llenarOpcionesSelect(select, placeholder, items) {
+  if (!select) return;
+
+  const inicial = document.createElement('option');
+  inicial.value = '';
+  inicial.textContent = placeholder;
+
+  const opciones = items.map(item => {
+    const opcion = document.createElement('option');
+    opcion.value = item.id;
+    opcion.textContent = item.descripcion;
+    return opcion;
+  });
+
+  select.replaceChildren(inicial, ...opciones);
 }
 
 async function cargarCatalogos() {
@@ -125,23 +153,9 @@ async function cargarCatalogos() {
 
   rolesPersonal = roles.filter(r => !esRolAprendiz(r.descripcion));
 
-  const selRolFiltro = document.getElementById('filtro-rol');
-  if (selRolFiltro) {
-    selRolFiltro.innerHTML = '<option value="">Todos los Roles</option>' +
-      rolesPersonal.map(r => `<option value="${r.id}">${ClassControl.escapeHtml(r.descripcion)}</option>`).join('');
-  }
-
-  const selRolForm = document.getElementById('inst-rol');
-  if (selRolForm) {
-    selRolForm.innerHTML = '<option value="">Seleccionar…</option>' +
-      rolesPersonal.map(r => `<option value="${r.id}">${ClassControl.escapeHtml(r.descripcion)}</option>`).join('');
-  }
-
-  const selTipoDoc = document.getElementById('inst-tipoDoc');
-  if (selTipoDoc) {
-    selTipoDoc.innerHTML = '<option value="">Seleccionar…</option>' +
-      tiposDocumento.map(t => `<option value="${t.id}">${ClassControl.escapeHtml(t.descripcion)}</option>`).join('');
-  }
+  llenarOpcionesSelect(document.getElementById('filtro-rol'), 'Todos los Roles', rolesPersonal);
+  llenarOpcionesSelect(document.getElementById('inst-rol'), 'Seleccionar…', rolesPersonal);
+  llenarOpcionesSelect(document.getElementById('inst-tipoDoc'), 'Seleccionar…', tiposDocumento);
 
   const hiddenVinculacion = document.getElementById('inst-tipoVinculacion');
   if (hiddenVinculacion && tiposVinculacion.length) {
@@ -179,9 +193,9 @@ function initDataTable() {
     ],
   });
 
-  $('#instructores-table tbody').on('click', '.btn-ver',      function() { verDetalle(parseInt(this.dataset.id, 10)); });
-  $('#instructores-table tbody').on('click', '.btn-editar',   function() { abrirModalEditar(parseInt(this.dataset.id, 10)); });
-  $('#instructores-table tbody').on('click', '.btn-eliminar', function() { abrirModalEliminar(parseInt(this.dataset.id, 10)); });
+  $('#instructores-table tbody').on('click', '.btn-ver',      function() { verDetalle(Number.parseInt(this.dataset.id, 10)); });
+  $('#instructores-table tbody').on('click', '.btn-editar',   function() { abrirModalEditar(Number.parseInt(this.dataset.id, 10)); });
+  $('#instructores-table tbody').on('click', '.btn-eliminar', function() { abrirModalEliminar(Number.parseInt(this.dataset.id, 10)); });
 }
 
 /* --------------------------------------------------
@@ -200,7 +214,7 @@ function renderTableData(lista = instructores()) {
 
     dtInstance.row.add([
       `<div class="d-flex align-items-center gap-2${inac ? ' opacity-50' : ''}">
-        <div class="cc-avatar-ini" style="background:${col.bg};color:${col.text}">${inic}</div>
+        <div class="cc-avatar-ini" style="background:${col.bg};color:${col.text}">${ClassControl.escapeHtml(inic)}</div>
         <div>
           <p class="cc-inst-name mb-0">${ClassControl.escapeHtml(u.nombres)}</p>
           <p class="cc-inst-apellido mb-0">${ClassControl.escapeHtml(u.apellidos)}</p>
@@ -248,13 +262,28 @@ function renderMetricas() {
   const metricas = document.getElementById('metricas');
   if (!metricas) return;
 
-  metricas.innerHTML = datos.map(d => `
-    <div class="${d.col}">
-      <div class="cc-metrica-card" style="border-left-color:${d.borde}">
-        <p class="cc-metrica-label">${d.label}</p>
-        <p class="cc-metrica-valor">${d.valor}</p>
-      </div>
-    </div>`).join('');
+  const tarjetas = datos.map(d => {
+    const col = document.createElement('div');
+    col.className = d.col;
+
+    const card = document.createElement('div');
+    card.className = 'cc-metrica-card';
+    card.style.borderLeftColor = d.borde;
+
+    const label = document.createElement('p');
+    label.className = 'cc-metrica-label';
+    label.textContent = d.label;
+
+    const valor = document.createElement('p');
+    valor.className = 'cc-metrica-valor';
+    valor.textContent = d.valor;
+
+    card.append(label, valor);
+    col.appendChild(card);
+    return col;
+  });
+
+  metricas.replaceChildren(...tarjetas);
 }
 
 /* --------------------------------------------------
@@ -292,7 +321,7 @@ function initFiltros() {
     const lista = instructores().filter(u => {
       const nombre = `${u.nombres} ${u.apellidos}`.toLowerCase();
       return (!busq   || nombre.includes(busq) || u.identificacion.includes(busq) || u.correo.toLowerCase().includes(busq))
-          && (!rolId  || u.rolId === parseInt(rolId, 10))
+          && (!rolId  || u.rolId === Number.parseInt(rolId, 10))
           && (!estado || (estado === 'Activo') === u.activo);
     });
 
@@ -403,7 +432,7 @@ function validarForm() {
     const el = document.getElementById(id);
     if (!el) return;
     const vacio = !el.value.trim();
-    const correoInvalido = id === 'inst-correo' && !vacio && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value);
+    const correoInvalido = id === 'inst-correo' && !vacio && !esCorreoValido(el.value);
     const invalido = vacio || correoInvalido;
     el.classList.toggle('is-invalid', invalido);
     if (invalido) ok = false;
@@ -439,7 +468,7 @@ function verDetalle(id) {
   const inic = getIniciales(u.nombres, u.apellidos);
 
   document.getElementById('detalle-avatar').innerHTML = `
-    <div class="cc-avatar-ini lg" style="background:${col.bg};color:${col.text}">${inic}</div>
+    <div class="cc-avatar-ini lg" style="background:${col.bg};color:${col.text}">${ClassControl.escapeHtml(inic)}</div>
     <div>
       <p class="fw-bold mb-0" style="font-size:1rem;">${ClassControl.escapeHtml(u.nombres)} ${ClassControl.escapeHtml(u.apellidos)}</p>
       <p class="mb-1" style="font-size:.82rem;color:var(--cc-muted);">${ClassControl.escapeHtml(u.correo)}</p>
@@ -540,11 +569,16 @@ function showToast(message, type = 'success') {
 
   const toast = document.createElement('div');
   toast.className = `cc-toast ${type}`;
-  toast.innerHTML = `
-    <span class="material-symbols-outlined" style="font-size:1.1rem">
-      ${type === 'success' ? 'check_circle' : 'error'}
-    </span>
-    <span>${message}</span>`;
+
+  const icon = document.createElement('span');
+  icon.className = 'material-symbols-outlined';
+  icon.style.fontSize = '1.1rem';
+  icon.textContent = type === 'success' ? 'check_circle' : 'error';
+
+  const messageEl = document.createElement('span');
+  messageEl.textContent = message;
+
+  toast.append(icon, messageEl);
   container.appendChild(toast);
 
   setTimeout(() => {

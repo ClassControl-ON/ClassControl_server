@@ -87,14 +87,28 @@ function renderMetricas() {
     { label: 'Total Programas', valor: programas.length, borde: 'var(--cc-primary)' },
   ];
 
-  metricasEl.innerHTML = datos.map(d => `
-    <div class="col-12 col-md-4">
-      <div class="cc-metric" style="border-left-color: ${d.borde}">
-        <div class="cc-metric-label">${d.label}</div>
-        <div class="cc-metric-value">${d.valor}</div>
-      </div>
-    </div>
-  `).join('');
+  const tarjetas = datos.map(d => {
+    const col = document.createElement('div');
+    col.className = 'col-12 col-md-4';
+
+    const card = document.createElement('div');
+    card.className = 'cc-metric';
+    card.style.borderLeftColor = d.borde;
+
+    const label = document.createElement('div');
+    label.className = 'cc-metric-label';
+    label.textContent = d.label;
+
+    const valor = document.createElement('div');
+    valor.className = 'cc-metric-value';
+    valor.textContent = d.valor;
+
+    card.append(label, valor);
+    col.appendChild(card);
+    return col;
+  });
+
+  metricasEl.replaceChildren(...tarjetas);
 }
 
 /* ------------------------------------------
@@ -401,9 +415,9 @@ tbodyProgramas.addEventListener('click', e => {
   const btnVer  = e.target.closest('.btn-ver');
   const btnEdit = e.target.closest('.btn-editar');
   const btnDel  = e.target.closest('.btn-eliminar');
-  if (btnVer)  abrirModalVer(parseInt(btnVer.dataset.id, 10));
-  if (btnEdit && puedeGestionar) abrirModalEditar(parseInt(btnEdit.dataset.id, 10));
-  if (btnDel  && puedeGestionar) abrirModalEliminar(parseInt(btnDel.dataset.id, 10));
+  if (btnVer)  abrirModalVer(Number.parseInt(btnVer.dataset.id, 10));
+  if (btnEdit && puedeGestionar) abrirModalEditar(Number.parseInt(btnEdit.dataset.id, 10));
+  if (btnDel  && puedeGestionar) abrirModalEliminar(Number.parseInt(btnDel.dataset.id, 10));
 });
 
 /* ------------------------------------------
@@ -436,4 +450,4 @@ document.addEventListener('keydown', e => {
 /* ------------------------------------------
    17. INICIALIZACIÓN
 ------------------------------------------ */
-inicializarDatos();
+void inicializarDatos();

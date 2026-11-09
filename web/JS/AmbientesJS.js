@@ -68,8 +68,19 @@ function sedeNombre(id) {
 function llenarSelectSedes(select, placeholder) {
   if (!select) return;
   const actual = select.value;
-  select.innerHTML = `<option value="">${placeholder}</option>` +
-    sedes.map(s => `<option value="${s.id}">${escapeHtml(s.nombre)}</option>`).join('');
+
+  const inicial = document.createElement('option');
+  inicial.value = '';
+  inicial.textContent = placeholder;
+
+  const opciones = sedes.map(s => {
+    const opcion = document.createElement('option');
+    opcion.value = s.id;
+    opcion.textContent = s.nombre;
+    return opcion;
+  });
+
+  select.replaceChildren(inicial, ...opciones);
   if (actual) select.value = actual;
 }
 
@@ -455,5 +466,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initDataTable();
   initChart();
   wireEvents();
-  inicializarDatos();
+  void inicializarDatos();
 });

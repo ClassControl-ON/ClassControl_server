@@ -32,8 +32,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" integrity="sha384-ok3J6xA9oQqai5C9ytYveFsBeKgoGk4T+NExsr6hoIKjZdv9SJcmx2mafwUWRNf9" crossorigin="anonymous" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
   <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
@@ -58,6 +58,7 @@
             </button>
             <div class="input-group" style="max-width: 420px;">
               <span class="input-group-text bg-white"><span class="material-symbols-outlined">search</span></span>
+              <label class="visually-hidden" for="searchInput">Buscar usuarios</label>
               <input id="searchInput" type="search" class="form-control" placeholder="Buscar por nombre, correo, rol o ID...">
             </div>
           </div>
@@ -81,14 +82,17 @@
           </div>
 
           <div class="d-flex gap-2 flex-wrap">
+            <label class="visually-hidden" for="filterFicha">Filtrar por ficha</label>
             <select id="filterFicha" class="form-select form-select-sm w-auto">
               <option value="">Todas las fichas</option>
               <%-- Las opciones se llenan dinámicamente en JS desde ConsultarFichas --%>
             </select>
+            <label class="visually-hidden" for="filterRole">Filtrar por rol</label>
             <select id="filterRole" class="form-select form-select-sm w-auto">
               <option value="">Todos los roles</option>
               <%-- Las opciones de rol se llenan dinámicamente en JS desde ConsultarRoles --%>
             </select>
+            <label class="visually-hidden" for="filterStatus">Filtrar por estado</label>
             <select id="filterStatus" class="form-select form-select-sm w-auto">
               <option value="">Cualquier estado</option>
               <option>Activo</option>
@@ -276,35 +280,35 @@
         <div class="modal-body">
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted">Nombre completo</label>
+              <span class="form-label fw-semibold text-muted d-block">Nombre completo</span>
               <p id="viewNombre" class="fw-semibold mb-0">-</p>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted">Identificación</label>
+              <span class="form-label fw-semibold text-muted d-block">Identificación</span>
               <p id="viewIdentificacion" class="fw-semibold mb-0">-</p>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted">Correo</label>
+              <span class="form-label fw-semibold text-muted d-block">Correo</span>
               <p id="viewCorreo" class="fw-semibold mb-0">-</p>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted">Teléfono</label>
+              <span class="form-label fw-semibold text-muted d-block">Teléfono</span>
               <p id="viewTelefono" class="fw-semibold mb-0">-</p>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted">Usuario (login)</label>
+              <span class="form-label fw-semibold text-muted d-block">Usuario (login)</span>
               <p id="viewUsername" class="fw-semibold mb-0">-</p>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted">Rol</label>
+              <span class="form-label fw-semibold text-muted d-block">Rol</span>
               <p id="viewRol" class="fw-semibold mb-0">-</p>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted">Ficha</label>
+              <span class="form-label fw-semibold text-muted d-block">Ficha</span>
               <p id="viewFicha" class="fw-semibold mb-0">-</p>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted">Estado</label>
+              <span class="form-label fw-semibold text-muted d-block">Estado</span>
               <p id="viewEstado" class="fw-semibold mb-0">-</p>
             </div>
           </div>
@@ -326,11 +330,11 @@
     </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" integrity="sha384-Udt767MMeKelGRBxaCfxX88YDLbViYdQ7T/gkRoB197Jf+OviZ+lsaRAOpS/MIjf" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js" integrity="sha384-PgPBH0hy6DTJwu7pTf6bkRqPlf/+pjUBExpr/eIfzszlGYFlF9Wi9VTAJODPhgCO" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-JUh163oCRItcbPme8pYnROHQMC6fNKTBWtRG3I3I0erJkzNgL7uxKlNwcrcFKeqF" crossorigin="anonymous"></script>
   <script src="JS/ClassControl_ui.js"></script>
   <script>
     // Solo el Administrador (3) gestiona usuarios; Coordinador solo visualiza.

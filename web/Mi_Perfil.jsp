@@ -32,8 +32,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" integrity="sha384-ok3J6xA9oQqai5C9ytYveFsBeKgoGk4T+NExsr6hoIKjZdv9SJcmx2mafwUWRNf9" crossorigin="anonymous" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
   <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
@@ -57,6 +57,7 @@
             </button>
             <div class="input-group" style="max-width: 420px;">
               <span class="input-group-text bg-white"><span class="material-symbols-outlined">search</span></span>
+              <label class="visually-hidden" for="searchInput">Buscar sesión, ubicación o dispositivo</label>
               <input id="searchInput" type="search" class="form-control" placeholder="Buscar sesión, ubicación o dispositivo...">
             </div>
           </div>
@@ -85,9 +86,10 @@
                 <div class="d-flex flex-column align-items-center text-center">
                   <div class="profile-avatar-wrap mb-3">
                     <img id="avatarPreview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9RbNayg0uD8d6VrgYgLzyUvBjkd-_MJABU6ZwO_jsdoNcOQwz5eCvECVCTdXf42AMADF3cYVLr_d1HbQciAo3voDlwETXof2nAg_kFusorx-GrT8WnDhVg1C4ieO8WKAXslFS38MmKubNEgVu-zob64Q9DI9187gBtqT8q6aG66yzFaL_z1kJvgSTgoMLVf5YyL0MgTLbRNxNEv6NzjULrL5rZUoke3duGXAYyCL-c6rnVBdYqiwgH_htpIshyHpSC823tun09ys" alt="Avatar" class="profile-avatar">
-                    <button class="btn btn-brand btn-sm profile-avatar-btn" id="btnUploadAvatar" type="button">
+                    <button class="btn btn-brand btn-sm profile-avatar-btn" id="btnUploadAvatar" type="button" aria-label="Cambiar foto de perfil">
                     <span class="material-symbols-outlined">photo_camera</span>
                     </button>
+                    <label class="visually-hidden" for="avatarInput">Seleccionar imagen de perfil</label>
                     <input id="avatarInput" type="file" class="d-none" accept="image/png,image/jpeg,image/webp" />
                   </div>
 
@@ -180,7 +182,7 @@
                     <label for="currentPassword" class="form-label">Contraseña actual *</label>
                     <div class="input-group">
                     <input type="password" class="form-control" id="currentPassword" required>
-                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="currentPassword">
+                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="currentPassword" aria-label="Mostrar u ocultar contraseña">
                     <span class="material-symbols-outlined">visibility_off</span>
                     </button>
                     </div>
@@ -190,7 +192,7 @@
                     <label for="newPassword" class="form-label">Nueva contraseña *</label>
                     <div class="input-group">
                     <input type="password" class="form-control" id="newPassword" required>
-                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="newPassword">
+                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="newPassword" aria-label="Mostrar u ocultar contraseña">
                     <span class="material-symbols-outlined">visibility_off</span>
                     </button>
                     </div>
@@ -204,7 +206,7 @@
                     <label for="confirmPassword" class="form-label">Confirmar contraseña *</label>
                     <div class="input-group">
                     <input type="password" class="form-control" id="confirmPassword" required>
-                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirmPassword">
+                    <button class="btn btn-outline-secondary toggle-password" type="button" data-target="confirmPassword" aria-label="Mostrar u ocultar contraseña">
                     <span class="material-symbols-outlined">visibility_off</span>
                     </button>
                     </div>
@@ -288,10 +290,10 @@
     </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js" integrity="sha384-Udt767MMeKelGRBxaCfxX88YDLbViYdQ7T/gkRoB197Jf+OviZ+lsaRAOpS/MIjf" crossorigin="anonymous"></script>
+  <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js" integrity="sha384-PgPBH0hy6DTJwu7pTf6bkRqPlf/+pjUBExpr/eIfzszlGYFlF9Wi9VTAJODPhgCO" crossorigin="anonymous"></script>
   <script src="JS/ClassControl_ui.js"></script>
   <script src="JS/Mi_PerfilJS.js"></script>
   <script src="JS/ClassControl_theme.js"></script>

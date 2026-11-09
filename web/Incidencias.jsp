@@ -26,7 +26,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Incidencias - ClassControl</title>
   <link rel="icon" type="image/png" href="img/logo.png" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
   <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
   <link rel="stylesheet" href="CSS/ClassControl_theme.css" />
@@ -181,31 +181,31 @@
       </div>
       <div class="modal-body">
         <div class="mb-3">
-          <label class="form-label">Título</label>
+          <span class="form-label d-block">Título</span>
           <p id="verTitulo" class="fw-semibold mb-0">-</p>
         </div>
         <div class="mb-3">
-          <label class="form-label">Tipo</label>
+          <span class="form-label d-block">Tipo</span>
           <p id="verTipo" class="fw-semibold mb-0">-</p>
         </div>
         <div class="mb-3">
-          <label class="form-label">Ambiente</label>
+          <span class="form-label d-block">Ambiente</span>
           <p id="verAmbiente" class="fw-semibold mb-0">-</p>
         </div>
         <div class="mb-3">
-          <label class="form-label">Reporta</label>
+          <span class="form-label d-block">Reporta</span>
           <p id="verReporta" class="fw-semibold mb-0">-</p>
         </div>
         <div class="mb-3">
-          <label class="form-label">Fecha</label>
+          <span class="form-label d-block">Fecha</span>
           <p id="verFecha" class="fw-semibold mb-0">-</p>
         </div>
         <div class="mb-3">
-          <label class="form-label">Estado</label>
+          <span class="form-label d-block">Estado</span>
           <p id="verEstado" class="fw-semibold mb-0">-</p>
         </div>
         <div class="mb-0">
-          <label class="form-label">Respuesta del administrador</label>
+          <span class="form-label d-block">Respuesta del administrador</span>
           <p id="verRespuesta" class="fw-semibold mb-0">-</p>
         </div>
       </div>
@@ -239,7 +239,7 @@
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="JS/ClassControl_ui.js"></script>
 <script src="JS/ClassControl_theme.js"></script>
 <script>
@@ -363,7 +363,7 @@
       if (!resp.ok) throw new Error(data.error || 'No se pudo registrar la atención');
       bootstrap.Modal.getInstance(document.getElementById('modalAtender'))?.hide();
       toast('Incidencia atendida.', 'ok');
-      cargar();
+      void cargar();
     } catch (err) {
       toast(err.message || 'Error al atender.', 'error');
     }
@@ -406,7 +406,7 @@
       if (!resp.ok) throw new Error(data.error || 'No se pudo enviar el reporte');
       bootstrap.Modal.getInstance(document.getElementById('modalNueva'))?.hide();
       toast('Reporte enviado al administrador.', 'ok');
-      cargar();
+      void cargar();
     } catch (err) {
       toast(err.message || 'Error al enviar el reporte.', 'error');
     }
@@ -431,7 +431,7 @@
       if (!resp.ok) throw new Error(data.error || 'No se pudo eliminar');
       bootstrap.Modal.getInstance(modalEl)?.hide();
       toast('Incidencia eliminada.', 'ok');
-      cargar();
+      void cargar();
     } catch (err) {
       bootstrap.Modal.getInstance(modalEl)?.hide();
       toast(err.message || 'Error al eliminar.', 'error');
@@ -459,17 +459,17 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    cargar();
+    void cargar();
     if (ES_INSTRUCTOR) {
-      cargarAmbientes();
+      void cargarAmbientes();
       document.getElementById('btnNueva')?.addEventListener('click', abrirNuevo);
-      document.getElementById('btnEnviarReporte')?.addEventListener('click', enviarReporte);
+      document.getElementById('btnEnviarReporte')?.addEventListener('click', () => { void enviarReporte(); });
     } else {
       document.getElementById('btnCSV')?.addEventListener('click', descargarCSV);
     }
-    document.getElementById('btnActualizar')?.addEventListener('click', cargar);
-    document.getElementById('btnGuardarAtencion')?.addEventListener('click', guardarAtencion);
-    document.getElementById('btnConfirmarEliminar')?.addEventListener('click', eliminar);
+    document.getElementById('btnActualizar')?.addEventListener('click', () => { void cargar(); });
+    document.getElementById('btnGuardarAtencion')?.addEventListener('click', () => { void guardarAtencion(); });
+    document.getElementById('btnConfirmarEliminar')?.addEventListener('click', () => { void eliminar(); });
     const modalEliminarEl = document.getElementById('modalEliminarIncidencia');
     modalEliminarEl?.addEventListener('hidden.bs.modal', () => { idEliminar = null; });
     document.getElementById('cuerpoTabla')?.addEventListener('click', e => {
