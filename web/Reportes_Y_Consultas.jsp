@@ -147,7 +147,7 @@
               </div>
             </div>
             <div class="cc-chart-wrap">
-              <canvas id="graficoProgramas" role="img"
+              <canvas id="graficoProgramas"
                       aria-label="Gráfico de barras con las programaciones por programa"></canvas>
             </div>
           </div>
@@ -164,7 +164,7 @@
               </div>
             </div>
             <div class="cc-chart-wrap cc-chart-wrap--doughnut">
-              <canvas id="graficoEstados" role="img"
+              <canvas id="graficoEstados"
                       aria-label="Gráfico circular con la distribución de programaciones por estado"></canvas>
             </div>
           </div>
@@ -181,7 +181,7 @@
               </div>
             </div>
             <div class="cc-chart-wrap cc-chart-wrap--line">
-              <canvas id="graficoTendencia" role="img"
+              <canvas id="graficoTendencia"
                       aria-label="Gráfico de línea con la tendencia de programaciones de los últimos seis meses"></canvas>
             </div>
           </div>
