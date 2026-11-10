@@ -130,9 +130,9 @@ async function inicializarDatos() {
 /* ------------------------------------------
    6. MÉTRICAS
 ------------------------------------------ */
-function renderMetricas() {
-  const total       = competencias.length;
-  const asignadas   = competencias.filter(c => programaPorId(c.programaId)).length;
+function renderMetricas(filtradas = competencias) {
+  const total       = filtradas.length;
+  const asignadas   = filtradas.filter(c => programaPorId(c.programaId)).length;
   const sinAsignar  = total - asignadas;
 
   const datos = [
@@ -210,11 +210,15 @@ function renderTabla() {
 
   const desde = total === 0 ? 0 : inicio + 1;
   const hasta  = Math.min(inicio + POR_PAGINA, total);
+  const hayFiltro = Boolean(filtroBusqueda.value.trim() || filtroPrograma.value);
+  const sufijo = hayFiltro && total !== competencias.length
+    ? ` (de ${competencias.length} en total)`
+    : '';
   contadorEl.textContent =
-    `Mostrando ${desde} - ${hasta} de ${total} competencia${total !== 1 ? 's' : ''}`;
+    `Mostrando ${desde} - ${hasta} de ${total} competencia${total !== 1 ? 's' : ''}${sufijo}`;
 
   renderPaginacion(totalPags);
-  renderMetricas();
+  renderMetricas(filtradas);
 }
 
 function crearFila(c) {
@@ -440,7 +444,7 @@ if (window.ccPuedeGestionarCatalogo) {
 function exportarCSV() {
   const BOM      = '\uFEFF';
   const cabecera = ['Código', 'Descripción', 'Programa'];
-  const filas    = competencias.map(c =>
+  const filas    = filtrar().map(c =>
     [c.codigo, `"${(c.descripcion ?? '').replace(/"/g,'""')}"`, `"${(programaLabel(programaPorId(c.programaId)) ?? 'Sin asignar').replace(/"/g,'""')}"`].join(',')
   );
   const csv  = BOM + [cabecera.join(','), ...filas].join('\r\n');
@@ -451,7 +455,7 @@ function exportarCSV() {
   });
   document.body.appendChild(a); a.click();
   document.body.removeChild(a); URL.revokeObjectURL(url);
-  mostrarToast('Reporte exportado correctamente.', 'download', ClassControl.colors.info);
+  mostrarToast(`Se exportaron ${filas.length} competencia${filas.length !== 1 ? 's' : ''}.`, 'download', ClassControl.colors.info);
 }
 
 /* ------------------------------------------

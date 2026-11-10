@@ -586,12 +586,24 @@ p,span,label,input,select,textarea,button,td,th,a {
 }
 /* -- Responsive sidebar ------------------------------------ */
 @media (max-width: 991.98px) {
-  
+  /* El header lleva título + búsqueda + botones. Si no envuelve, se
+     desborda y el layout se ve "roto" en tabletas y móviles. */
+  .cc-header {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: var(--cc-header-h);
+    gap: .5rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+  }
 
-  
+  .cc-header__actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+  }
 
-  
-  .cc-search  { width: 160px; }
+  .cc-search  { width: 160px; flex: 1 1 160px; }
 
   .cc-toolbar {
     flex-wrap: wrap;
@@ -601,6 +613,13 @@ p,span,label,input,select,textarea,button,td,th,a {
   }
 
   .cc-filter-select { min-width: 110px; }
+
+  /* La vista lista tiene 11 columnas: permitir desplazamiento
+     horizontal en vez de recortar la tabla dentro de la tarjeta. */
+  .cc-table-card { overflow-x: auto; }
+  #schedule-table { min-width: 980px; }
+
+  .cc-content-scroll { padding: 1rem; }
 
   .cc-footer {
     flex-wrap: wrap;
@@ -619,8 +638,10 @@ p,span,label,input,select,textarea,button,td,th,a {
   }
   .cc-view-toggle { width: 100%; }
   .cc-view-toggle .btn { flex: 1; }
-  .cc-search { width: 100%; }
-  .cc-header__actions { flex-wrap: wrap; }
+  .cc-search { width: 100%; flex: 1 1 100%; }
+  .cc-header__actions .btn { flex: 1 1 auto; }
+  .cc-content-scroll { padding: .75rem; }
+  .cc-calendar-wrapper { min-width: 600px; }
 }
 /* -- Material Symbols -------------------------------------- */
 .material-symbols-outlined {

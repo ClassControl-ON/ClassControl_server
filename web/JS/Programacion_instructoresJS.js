@@ -79,6 +79,7 @@ const filterInstructor = document.getElementById("filter-instructor");
 const filterFicha      = document.getElementById("filter-ficha");
 const filterTrimestre  = document.getElementById("filter-trimestre");
 const btnClearFilters  = document.getElementById("btn-clear-filters");
+const btnExportExcel   = document.getElementById("btn-export-excel");
 const btnDark          = document.getElementById("dark-toggle");
 const btnSidebarToggle = document.getElementById("sidebar-toggle");
 const sidebar          = document.getElementById("cc-sidebar");
@@ -238,6 +239,20 @@ function agregarOpciones(select, datos, idKey, labelKey, labelFn) {
 async function cambiarFiltrosServidor() {
   await cargarProgramaciones();
   applyFilters();
+}
+
+/* Descarga en Excel la programación con los filtros que están activos
+   en pantalla. El servlet vuelve a aplicar los permisos por rol. */
+function exportarExcel() {
+  const params = new URLSearchParams();
+  if (filterInstructor?.value) params.set("instructorId", filterInstructor.value);
+  if (filterFicha?.value) params.set("fichaId", filterFicha.value);
+  if (filterTrimestre?.value) params.set("trimestreId", filterTrimestre.value);
+  const query = (searchInput?.value ?? "").trim();
+  if (query) params.set("q", query);
+
+  const destino = `ExportarProgramacion${params.size ? `?${params.toString()}` : ""}`;
+  window.location.assign(destino);
 }
 
 /* Resumen de horas junto al filtro de instructor. Al seleccionar un
@@ -718,6 +733,7 @@ function bindEvents() {
   filterInstructor?.addEventListener("change", cambiarFiltrosServidor);
   filterFicha?.addEventListener("change", cambiarFiltrosServidor);
   filterTrimestre?.addEventListener("change", cambiarFiltrosServidor);
+  btnExportExcel?.addEventListener("click", exportarExcel);
   btnClearFilters?.addEventListener("click", async () => {
     if (filterInstructor) filterInstructor.value = "";
     if (filterFicha) filterFicha.value = "";

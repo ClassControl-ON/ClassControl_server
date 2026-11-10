@@ -85,10 +85,16 @@
           <fmt:message bundle="${i18n}" key="programacion.btn.nueva"/>
         </button>
 
-        <!-- <fmt:message bundle="${i18n}" key="common.btn.exportar"/> -->
-        <button onclick="window.print()" class="btn btn-outline-secondary cc-btn-icon-text">
+        <!-- Exportar la programación filtrada -->
+        <button id="btn-export-excel" type="button" class="btn btn-outline-success cc-btn-icon-text"
+                title="Descargar en Excel">
+          <span class="material-symbols-outlined cc-icon-sm">table_view</span>
+          Excel
+        </button>
+        <button type="button" onclick="window.print()" class="btn btn-outline-secondary cc-btn-icon-text"
+                title="Imprimir o guardar como PDF">
           <span class="material-symbols-outlined cc-icon-sm">picture_as_pdf</span>
-          <fmt:message bundle="${i18n}" key="common.btn.exportar"/>
+          PDF
         </button>
 
         <!-- Dark mode -->

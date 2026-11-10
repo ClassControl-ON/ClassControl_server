@@ -11,336 +11,277 @@
     response.sendRedirect("Inicio_de_sesion.jsp");
     return;
   }
+  // Reportes: Instructor (1), Administrador (3) y Coordinador (4).
+  if (sesRol == null || !(sesRol == 1 || sesRol == 3 || sesRol == 4)) {
+    response.sendRedirect("Pagina_Principal.jsp?error=permiso");
+    return;
+  }
+  boolean esInstructorWeb = (sesRol == 1);
 %>
-<%@ taglib prefix="c" uri="jakarta.tags.core"%>
-
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-bs-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reportes y Consultas - ClassControl</title>
-
   <link rel="icon" type="image/png" href="img/logo.png" />
-  <!-- Bootstrap 5 -->
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" rel="stylesheet" />
-  <!-- DM Sans -->
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
-  <link rel="stylesheet" href="CSS/ClassControl_base.css"/>
+  <link rel="stylesheet" href="CSS/ClassControl_base.css" />
   <link rel="stylesheet" href="CSS/ClassControl_theme.css" />
   <link rel="stylesheet" href="CSS/ClassControl_sidebar.css" />
   <link rel="stylesheet" href="CSS/Reportes_Y_ConsultasCSS.css" />
 </head>
 <body>
+<div class="cc-layout">
 
+  <% String ccActivePage = "reportes"; %>
+  <%@ include file="_Sidebar.jspf" %>
 
-<!-- ==== SIDEBAR ==== -->
-<%   String ccActivePage = "reportes"; %>
-<%@ include file="_Sidebar.jspf" %>
+  <main class="cc-main cc-catalog-main">
 
-<!-- ==== MAIN ==== -->
-<main class="cc-main">
+    <button class="cc-sidebar-toggle d-lg-none" id="sidebar-toggle" aria-label="Abrir menú">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
 
-  <!-- TOP BAR -->
-  <header class="cc-topbar">
-    <div>
-      <h2 class="cc-page-title">Reportes y Consultas</h2>
-      <nav class="cc-breadcrumb">
-        <span>ClassControl</span>
-        <span class="material-symbols-outlined">chevron_right</span>
-        <span class="cc-breadcrumb-active">Análisis de Gestión</span>
-      </nav>
-    </div>
-    <div class="cc-topbar-actions">
-      <!-- Selector de periodo como form -->
-      <form id="formPeriodo" class="cc-period-form">
-        <label for="selectPeriodo" class="visually-hidden">Periodo</label>
-        <span class="material-symbols-outlined">calendar_today</span>
-        <select id="selectPeriodo" name="periodo" class="cc-period-select">
-          <option value="mes">Este Mes</option>
-          <option value="trimestre">Trimestre Actual</option>
-          <option value="anio">Año 2024</option>
-        </select>
-      </form>
-      <div class="d-flex gap-2">
-        <button id="dark-toggle" class="cc-icon-btn" title="Cambiar tema">
+    <!-- ── Encabezado ── -->
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
+      <div>
+        <h1 class="cc-page-title">Reportes y Consultas</h1>
+        <p class="text-muted mb-0">
+          <%= esInstructorWeb
+                ? "Resumen de tu programación y descarga de reportes."
+                : "Indicadores de programación, ocupación de ambientes y descarga de reportes." %>
+        </p>
+      </div>
+
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <div>
+          <label class="visually-hidden" for="selectPeriodo">Periodo</label>
+          <select id="selectPeriodo" class="form-select cc-input">
+            <option value="mes">Este mes</option>
+            <option value="trimestre">Trimestre actual</option>
+            <option value="anio">Año actual</option>
+          </select>
+        </div>
+        <button type="button" class="btn cc-btn-outline" id="btnActualizar">
+          <span class="material-symbols-outlined">refresh</span>
+          Actualizar
+        </button>
+        <button id="dark-toggle" class="btn cc-icon-btn" title="Cambiar tema">
           <span class="material-symbols-outlined">dark_mode</span>
         </button>
-        <button class="cc-icon-btn position-relative" title="Notificaciones">
-          <span class="material-symbols-outlined">notifications</span>
-          <span class="cc-notification-dot"></span>
-        </button>
-        <button class="cc-icon-btn" title="Perfil">
-          <span class="material-symbols-outlined">account_circle</span>
-        </button>
       </div>
     </div>
-  </header>
 
-  <div class="cc-content">
+    <!-- ── Mensajes ── -->
+    <div id="estadoCarga" class="alert alert-info d-flex align-items-center gap-2" role="status">
+      <span class="material-symbols-outlined">hourglass_top</span>
+      <span>Cargando reportes...</span>
+    </div>
+    <div id="alertaError" class="alert alert-danger d-none" role="alert"></div>
 
-    <!-- ==== CARDS DE MÉTRICAS ==== -->
-    <section class="row g-4 mb-4">
-      <div class="col-12 col-md-6 col-lg-3">
-        <div class="cc-metric-card cc-metric-green">
-          <div class="cc-metric-top">
-            <div class="cc-metric-icon bg-green-soft">
-              <span class="material-symbols-outlined text-green">groups</span>
-            </div>
-            <span class="cc-badge-green">+4% vs mes ant.</span>
+    <!-- ── Indicadores ── -->
+    <section class="row g-3 mb-4" aria-label="Indicadores del periodo">
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="cc-kpi">
+          <div class="cc-kpi-icon cc-kpi-icon--green">
+            <span class="material-symbols-outlined">event_available</span>
           </div>
-          <p class="cc-metric-label">Instructores Programados</p>
-          <h3 class="cc-metric-value" id="metricInstructores">${metricaInstructores}</h3>
+          <div class="cc-kpi-body">
+            <p class="cc-kpi-label">Programaciones</p>
+            <p class="cc-kpi-value" id="kpiProgramaciones">0</p>
+            <p class="cc-kpi-hint" id="kpiProgramacionesHint">En el periodo</p>
+          </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-lg-3">
-        <div class="cc-metric-card cc-metric-blue">
-          <div class="cc-metric-top">
-            <div class="cc-metric-icon bg-blue-soft">
-              <span class="material-symbols-outlined text-blue">schedule</span>
-            </div>
-            <span class="cc-badge-blue">82% de la meta</span>
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="cc-kpi">
+          <div class="cc-kpi-icon cc-kpi-icon--blue">
+            <span class="material-symbols-outlined">groups</span>
           </div>
-          <p class="cc-metric-label">Horas de Formación</p>
-          <h3 class="cc-metric-value" id="metricHoras">${metricaHoras}</h3>
+          <div class="cc-kpi-body">
+            <p class="cc-kpi-label">Instructores</p>
+            <p class="cc-kpi-value" id="kpiInstructores">0</p>
+            <p class="cc-kpi-hint" id="kpiInstructoresHint">Con programación</p>
+          </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-lg-3">
-        <div class="cc-metric-card cc-metric-orange">
-          <div class="cc-metric-top">
-            <div class="cc-metric-icon bg-orange-soft">
-              <span class="material-symbols-outlined text-orange">room_preferences</span>
-            </div>
-            <span class="cc-badge-orange">Pico: 10am - 2pm</span>
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="cc-kpi">
+          <div class="cc-kpi-icon cc-kpi-icon--orange">
+            <span class="material-symbols-outlined">schedule</span>
           </div>
-          <p class="cc-metric-label">Ocupación de Ambientes</p>
-          <h3 class="cc-metric-value" id="metricOcupacion">${metricaOcupacion}</h3>
+          <div class="cc-kpi-body">
+            <p class="cc-kpi-label">Horas semanales</p>
+            <p class="cc-kpi-value" id="kpiHoras">0</p>
+            <p class="cc-kpi-hint" id="kpiHorasHint">Horas programadas</p>
+          </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-lg-3">
-        <div class="cc-metric-card cc-metric-red">
-          <div class="cc-metric-top">
-            <div class="cc-metric-icon bg-red-soft">
-              <span class="material-symbols-outlined text-red">verified</span>
-            </div>
-            <span class="cc-badge-red">Meta: 90%</span>
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="cc-kpi">
+          <div class="cc-kpi-icon cc-kpi-icon--red">
+            <span class="material-symbols-outlined">verified</span>
           </div>
-          <p class="cc-metric-label">Cumplimiento Competencias</p>
-          <h3 class="cc-metric-value" id="metricCumplimiento">${metricaCumplimiento}</h3>
+          <div class="cc-kpi-body">
+            <p class="cc-kpi-label">Cumplimiento</p>
+            <p class="cc-kpi-value" id="kpiCumplimiento">0%</p>
+            <p class="cc-kpi-hint" id="kpiCumplimientoHint">Programaciones activas</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ==== GRÁFICOS ==== -->
-    <section class="row g-4 mb-4">
-
-      <!-- Barras por Programa -->
-      <div class="col-12 col-lg-8">
-        <div class="cc-card h-100">
-          <div class="cc-card-header">
-            <div>
-              <h4 class="cc-card-title">Ocupación por Programa</h4>
-              <p class="cc-card-subtitle">Distribución de horas por área de formación</p>
+    <!-- ── Gráficos ── -->
+    <section class="row g-3 mb-4">
+      <div class="col-12 col-xl-7">
+        <div class="card cc-card h-100">
+          <div class="card-body">
+            <div class="cc-card-heading">
+              <div>
+                <h2 class="cc-card-title">Programaciones por programa</h2>
+                <p class="cc-card-subtitle">Cantidad de bloques de formación en el periodo</p>
+              </div>
             </div>
-            <!-- Form de filtro avanzado -->
-            <form id="formFiltroPrograma" class="d-flex gap-2 align-items-center">
-              <label for="selectPrograma" class="visually-hidden">Filtrar programa</label>
-              <select id="selectPrograma" name="programa" class="form-select form-select-sm cc-filter-select">
+            <div class="cc-chart-wrap">
+              <canvas id="graficoProgramas" role="img"
+                      aria-label="Gráfico de barras con las programaciones por programa"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-xl-5">
+        <div class="card cc-card h-100">
+          <div class="card-body">
+            <div class="cc-card-heading">
+              <div>
+                <h2 class="cc-card-title">Distribución por estado</h2>
+                <p class="cc-card-subtitle">Programaciones activas e inactivas</p>
+              </div>
+            </div>
+            <div class="cc-chart-wrap cc-chart-wrap--doughnut">
+              <canvas id="graficoEstados" role="img"
+                      aria-label="Gráfico circular con la distribución de programaciones por estado"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card cc-card">
+          <div class="card-body">
+            <div class="cc-card-heading">
+              <div>
+                <h2 class="cc-card-title">Tendencia de los últimos 6 meses</h2>
+                <p class="cc-card-subtitle">Programaciones que inician cada mes</p>
+              </div>
+            </div>
+            <div class="cc-chart-wrap cc-chart-wrap--line">
+              <canvas id="graficoTendencia" role="img"
+                      aria-label="Gráfico de línea con la tendencia de programaciones de los últimos seis meses"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Detalle ── -->
+    <section class="card cc-card">
+      <div class="card-body">
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-3">
+          <div>
+            <h2 class="cc-card-title">Detalle de programaciones</h2>
+            <p class="cc-card-subtitle" id="resumenTabla">Sin datos para mostrar.</p>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <div class="cc-search-field">
+              <span class="material-symbols-outlined">search</span>
+              <label class="visually-hidden" for="inputBuscar">Buscar en el detalle</label>
+              <input type="search" id="inputBuscar" class="form-control cc-input"
+                     placeholder="Buscar instructor, ficha, ambiente..." autocomplete="off" />
+            </div>
+            <div>
+              <label class="visually-hidden" for="selectPrograma">Filtrar por programa</label>
+              <select id="selectPrograma" class="form-select cc-input">
                 <option value="todos">Todos los programas</option>
-                <option value="software">Desarrollo de Software</option>
-                <option value="multimedia">Multimedia y Diseño</option>
-                <option value="admin">Gestión Administrativa</option>
-                <option value="mante">Mantenimiento Electrónico</option>
               </select>
-              <button type="submit" class="btn btn-sm cc-btn-outline">
-                <span class="material-symbols-outlined" style="font-size:16px">filter_list</span>
-                Filtrar
-              </button>
-            </form>
-          </div>
-          <div class="cc-card-body" id="programaBars">
-            <!-- Renderizado por JS -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Gráfico de Tendencia Semanal -->
-      <div class="col-12 col-lg-4">
-        <div class="cc-card h-100">
-          <div class="cc-card-header">
+            </div>
             <div>
-              <h4 class="cc-card-title">Tendencia Semanal</h4>
-              <p class="cc-card-subtitle">Variación de horas impartidas</p>
+              <label class="visually-hidden" for="selectEstado">Filtrar por estado</label>
+              <select id="selectEstado" class="form-select cc-input">
+                <option value="todos">Todos los estados</option>
+              </select>
             </div>
-          </div>
-          <div class="cc-card-body">
-            <div class="cc-bar-chart" id="tendenciaChart">
-              <!-- Renderizado por JS -->
-            </div>
-            <div class="cc-bar-labels" id="tendenciaLabels">
-              <!-- Renderizado por JS -->
-            </div>
+            <button type="button" class="btn cc-btn-outline" id="btnLimpiar">
+              <span class="material-symbols-outlined">filter_alt_off</span>
+              Limpiar
+            </button>
           </div>
         </div>
-      </div>
 
-    </section>
-
-    <!-- ==== REPORTES DISPONIBLES ==== -->
-    <section class="cc-card">
-      <div class="cc-card-header">
-        <div>
-          <h4 class="cc-card-title">Reportes Disponibles</h4>
-          <p class="cc-card-subtitle">Documentación oficial lista para descarga</p>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <p class="text-muted mb-0" id="textoOcupacion"></p>
+          <div class="d-flex flex-wrap gap-2" role="group" aria-label="Exportar reporte">
+            <button type="button" class="btn cc-btn-outline" id="btnExcel">
+              <span class="material-symbols-outlined">table_view</span>
+              Excel
+            </button>
+            <button type="button" class="btn cc-btn-outline" id="btnCsv">
+              <span class="material-symbols-outlined">description</span>
+              CSV
+            </button>
+            <button type="button" class="btn cc-btn-primary" id="btnPdf">
+              <span class="material-symbols-outlined">picture_as_pdf</span>
+              PDF
+            </button>
+          </div>
         </div>
-        <!-- Form de búsqueda -->
-        <form id="formBuscarReporte" class="cc-search-form">
-          <span class="material-symbols-outlined cc-search-icon">search</span>
-          <label class="visually-hidden" for="inputBuscarReporte">Buscar reporte</label>
-          <input
-            type="search"
-            id="inputBuscarReporte"
-            name="busqueda"
-            class="cc-search-input"
-            placeholder="Buscar reporte..."
-            autocomplete="off"
-          />
-        </form>
-      </div>
 
-      <div class="table-responsive">
-        <table class="cc-table" id="tablaReportes">
-          <thead>
-            <tr>
-              <th>Nombre del Reporte</th>
-              <th>Última Generación</th>
-              <th>Categoría</th>
-              <th class="text-end">Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tablaReportesBody">
-            <%-- Ejemplo de iteración con JSTL --%>
-            <%--
-            <c:forEach var="reporte" items="${listaReportes}">
+        <div class="table-responsive">
+          <table class="table cc-table align-middle mb-0" id="tablaDetalle">
+            <thead>
               <tr>
-                <td>
-                  <div class="d-flex align-items-center gap-2">
-                    <span class="material-symbols-outlined text-muted">description</span>
-                    <span class="fw-medium">${reporte.nombre}</span>
-                  </div>
-                </td>
-                <td>${reporte.fechaGeneracion}</td>
-                <td><span class="badge bg-light text-dark border">${reporte.categoria}</span></td>
-                <td class="text-end">
-                  <a href="${pageContext.request.contextPath}/descargarReporte?id=${reporte.id}" class="btn btn-sm btn-outline-primary">Descargar</a>
-                </td>
+                <th>Programa</th>
+                <th>Ficha</th>
+                <th>Instructor</th>
+                <th>Ambiente</th>
+                <th>Día</th>
+                <th>Horario</th>
+                <th class="text-end">Horas/sem</th>
+                <th>Estado</th>
+                <th>Vigencia</th>
               </tr>
-            </c:forEach>
-            --%>
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody id="cuerpoDetalle">
+              <tr>
+                <td colspan="9" class="text-center text-muted py-4">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <div class="cc-card-footer text-center">
-        <button class="cc-link-btn" id="btnVerTodos">Ver todos los reportes disponibles (${totalReportes})</button>
+        <noscript>
+          <div class="alert alert-warning mt-3 mb-0">
+            Activa JavaScript para ver los indicadores y descargar los reportes.
+          </div>
+        </noscript>
       </div>
     </section>
 
-  </div><!-- /cc-content -->
-</main>
+  </main>
+</div><!-- /.cc-layout -->
 
-<!-- ==== MODAL: NUEVO REPORTE ==== -->
-<div class="modal fade" id="modalNuevoReporte" tabindex="-1" aria-labelledby="modalNuevoReporteLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content cc-modal">
-      <div class="modal-header cc-modal-header">
-        <div class="d-flex align-items-center gap-2">
-          <span class="material-symbols-outlined text-green">add_chart</span>
-          <h5 class="modal-title cc-modal-title" id="modalNuevoReporteLabel">Generar Nuevo Reporte</h5>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body p-4">
-        <form id="formNuevoReporte" novalidate>
-          <div class="mb-3">
-            <label for="inputNombreReporte" class="cc-label">Nombre del Reporte <span class="text-danger">*</span></label>
-            <input type="text" class="form-control cc-input" id="inputNombreReporte" name="nombre" placeholder="Ej: Listado Fichas Activas Junio" required />
-            <div class="invalid-feedback">El nombre del reporte es obligatorio.</div>
-          </div>
-
-          <div class="mb-3">
-            <label for="selectCategoria" class="cc-label">Categoría <span class="text-danger">*</span></label>
-            <select class="form-select cc-input" id="selectCategoria" name="categoria" required>
-              <option value="">Seleccionar categoría...</option>
-              <option value="academico">Académico</option>
-              <option value="talento">Talento Humano</option>
-              <option value="logistica">Logística</option>
-              <option value="financiero">Financiero</option>
-            </select>
-            <div class="invalid-feedback">Selecciona una categoría.</div>
-          </div>
-
-          <div class="row g-3 mb-3">
-            <div class="col-6">
-              <label for="inputFechaInicio" class="cc-label">Fecha Inicio <span class="text-danger">*</span></label>
-              <input type="date" class="form-control cc-input" id="inputFechaInicio" name="fechaInicio" required />
-              <div class="invalid-feedback">Selecciona la fecha de inicio.</div>
-            </div>
-            <div class="col-6">
-              <label for="inputFechaFin" class="cc-label">Fecha Fin <span class="text-danger">*</span></label>
-              <input type="date" class="form-control cc-input" id="inputFechaFin" name="fechaFin" required />
-              <div class="invalid-feedback">Selecciona la fecha de fin.</div>
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <span class="cc-label d-block">Formato de Exportación</span>
-            <div class="d-flex gap-3 mt-1">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="formato" id="formatoPdf" value="pdf" checked />
-                <label class="form-check-label cc-label" for="formatoPdf">PDF</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="formato" id="formatoExcel" value="excel" />
-                <label class="form-check-label cc-label" for="formatoExcel">Excel</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="formato" id="formatoCsv" value="csv" />
-                <label class="form-check-label cc-label" for="formatoCsv">CSV</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="textareaDescripcion" class="cc-label">Descripción (opcional)</label>
-            <textarea class="form-control cc-input" id="textareaDescripcion" name="descripcion" rows="3" placeholder="Observaciones o detalles adicionales..."></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer cc-modal-footer">
-        <button type="button" class="btn cc-btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn cc-btn-primary" id="btnGuardarReporte">
-          <span class="material-symbols-outlined">save</span>
-          Generar Reporte
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FAB -->
-<button class="cc-fab" id="btnFAB" data-bs-toggle="modal" data-bs-target="#modalNuevoReporte" title="Nuevo Reporte">
-  <span class="material-symbols-outlined">add_chart</span>
-  <span class="cc-fab-tooltip">Nuevo Reporte</span>
-</button>
-
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" integrity="sha384-JUh163oCRItcbPme8pYnROHQMC6fNKTBWtRG3I3I0erJkzNgL7uxKlNwcrcFKeqF" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js" integrity="sha384-fCAW/rDWORTbQXSiB7mOg0QtQ5c+r0f544y6XoKjuVva0nMBlCpNUjiFeG5iMdS3" crossorigin="anonymous"></script>
 <script src="JS/ClassControl_ui.js"></script>
 <script src="JS/Reportes_Y_ConsultasJS.js"></script>
-  <script src="JS/ClassControl_theme.js"></script>
+<script src="JS/ClassControl_theme.js"></script>
 </body>
 </html>

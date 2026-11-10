@@ -130,6 +130,9 @@
     <a class="cc-nav-link cc-nav-link--standard <%= "incidencias".equals(ccActivePage) ? "active" : "" %>" href="Incidencias.jsp">
       <span class="material-symbols-outlined">report_problem</span><span>Incidencias</span>
     </a>
+    <a class="cc-nav-link cc-nav-link--standard <%= "reportes".equals(ccActivePage) ? "active" : "" %>" href="Reportes_Y_Consultas.jsp">
+      <span class="material-symbols-outlined">analytics</span><span>Reportes</span>
+    </a>
     <% } %>
     <% if (ccVerUsuarios) { %>
     <a class="cc-nav-link cc-nav-link--standard <%= "usuarios".equals(ccActivePage) ? "active" : "" %>" href="Gestion_Usuarios.jsp">
