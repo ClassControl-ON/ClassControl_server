@@ -32,17 +32,6 @@ function esRolAprendiz(descripcion) {
   return (descripcion || '').trim().toLowerCase() === 'aprendiz';
 }
 
-/** Valida el formato básico de un correo sin expresiones regulares. */
-function esCorreoValido(valor) {
-  const correo = String(valor || '').trim();
-  const arroba = correo.indexOf('@');
-  if (arroba <= 0 || arroba !== correo.lastIndexOf('@') || arroba === correo.length - 1) return false;
-  if (/\s/.test(correo)) return false;
-  const dominio = correo.slice(arroba + 1);
-  const punto = dominio.lastIndexOf('.');
-  return punto > 0 && punto < dominio.length - 1;
-}
-
 function instructores() {
   // "Personal" visible en esta pantalla: todo usuario cuyo rol no sea Aprendiz.
   const idsExcluidos = new Set(roles.filter(r => esRolAprendiz(r.descripcion)).map(r => r.id));
@@ -432,7 +421,7 @@ function validarForm() {
     const el = document.getElementById(id);
     if (!el) return;
     const vacio = !el.value.trim();
-    const correoInvalido = id === 'inst-correo' && !vacio && !esCorreoValido(el.value);
+    const correoInvalido = id === 'inst-correo' && !vacio && !ClassControl.esCorreoValido(el.value);
     const invalido = vacio || correoInvalido;
     el.classList.toggle('is-invalid', invalido);
     if (invalido) ok = false;

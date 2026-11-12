@@ -26,17 +26,6 @@ function getInitials(name) {
   return name.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
 }
 
-/** Valida el formato básico de un correo sin expresiones regulares. */
-function esCorreoValido(valor) {
-  const correo = String(valor || '').trim();
-  const arroba = correo.indexOf('@');
-  if (arroba <= 0 || arroba !== correo.lastIndexOf('@') || arroba === correo.length - 1) return false;
-  if (/\s/.test(correo)) return false;
-  const dominio = correo.slice(arroba + 1);
-  const punto = dominio.lastIndexOf('.');
-  return punto > 0 && punto < dominio.length - 1;
-}
-
 function nombreCompleto(u) {
   return [u.nombres, u.apellidos].filter(Boolean).join(' ');
 }
@@ -229,7 +218,7 @@ function validateForm() {
   if (!identificacion) { setInvalid('fieldIdentificacion'); valid = false; }
   if (!tipoDoc) { setInvalid('fieldTipoDoc'); valid = false; }
 
-  if (!esCorreoValido(email)) {
+  if (!ClassControl.esCorreoValido(email)) {
     setInvalid('fieldEmail', 'Correo electrónico no válido.');
     valid = false;
   } else {

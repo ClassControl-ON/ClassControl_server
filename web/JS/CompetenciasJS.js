@@ -141,28 +141,7 @@ function renderMetricas(filtradas = competencias) {
     { label: 'Sin asignar',     valor: sinAsignar, borde: 'var(--cc-warning)' },
   ];
 
-  const tarjetas = datos.map(d => {
-    const col = document.createElement('div');
-    col.className = 'col-6 col-md-4';
-
-    const card = document.createElement('div');
-    card.className = 'cc-metric';
-    card.style.borderLeftColor = d.borde;
-
-    const label = document.createElement('div');
-    label.className = 'cc-metric-label';
-    label.textContent = d.label;
-
-    const valor = document.createElement('div');
-    valor.className = 'cc-metric-value';
-    valor.textContent = d.valor;
-
-    card.append(label, valor);
-    col.appendChild(card);
-    return col;
-  });
-
-  metricasEl.replaceChildren(...tarjetas);
+  ClassControl.renderMetricCards(metricasEl, datos, 'col-6 col-md-4');
 
   if (resumenCargaEl) {
     resumenCargaEl.textContent =
@@ -250,51 +229,10 @@ function crearFila(c) {
    9. PAGINACIÓN
 ------------------------------------------ */
 function renderPaginacion(totalPags) {
-  paginacionEl.innerHTML = '';
-
-  paginacionEl.appendChild(
-    crearBtnNav('chevron_left', paginaActual === 1, () => { paginaActual--; renderTabla(); })
-  );
-
-  calcularRango(paginaActual, totalPags).forEach(item => {
-    if (item === '...') {
-      const ell = document.createElement('span');
-      ell.className = 'cc-page-ellipsis'; ell.textContent = '…';
-      paginacionEl.appendChild(ell);
-    } else {
-      const btn = document.createElement('button');
-      btn.className   = `cc-page-btn${item === paginaActual ? ' active' : ''}`;
-      btn.textContent = item;
-      btn.addEventListener('click', () => { paginaActual = item; renderTabla(); });
-      paginacionEl.appendChild(btn);
-    }
+  ClassControl.renderPagination(paginacionEl, paginaActual, totalPags, destino => {
+    paginaActual = destino;
+    renderTabla();
   });
-
-  paginacionEl.appendChild(
-    crearBtnNav('chevron_right', paginaActual === totalPags, () => { paginaActual++; renderTabla(); })
-  );
-}
-
-function crearBtnNav(icon, disabled, handler) {
-  const btn = document.createElement('button');
-  btn.className = 'cc-page-btn'; btn.disabled = disabled;
-  btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:1rem">${icon}</span>`;
-  btn.addEventListener('click', handler);
-  return btn;
-}
-
-function calcularRango(actual, total) {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-  const s = new Set([1, total, actual]);
-  if (actual > 1)     s.add(actual - 1);
-  if (actual < total) s.add(actual + 1);
-  const sorted = [...s].sort((a, b) => a - b);
-  const result = [];
-  sorted.forEach((n, i) => {
-    if (i > 0 && n - sorted[i-1] > 1) result.push('...');
-    result.push(n);
-  });
-  return result;
 }
 
 /* ------------------------------------------
@@ -365,12 +303,7 @@ formComp.addEventListener('submit', async e => {
   const url = id ? 'ActualizarCompetencia' : 'RegistrarCompetencia';
 
   try {
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params,
-    });
-    if (!resp.ok) { let m = 'Respuesta no exitosa del servidor'; try { const d = await resp.json(); if (d && d.error) m = d.error; } catch (_) {} throw new Error(m); }
+    await ClassControl.postForm(url, params);
 
     await cargarCompetencias();
     bsModalComp.hide();
@@ -420,12 +353,10 @@ if (window.ccPuedeGestionarCatalogo) {
   btnConfirmarElim.addEventListener('click', async () => {
     if (idAEliminar === null) return;
     try {
-      const resp = await fetch('EliminarCompetencia', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ id: String(idAEliminar) }),
-      });
-      if (!resp.ok) { let m = 'Respuesta no exitosa del servidor'; try { const d = await resp.json(); if (d && d.error) m = d.error; } catch (_) {} throw new Error(m); }
+      await ClassControl.postForm(
+        'EliminarCompetencia',
+        new URLSearchParams({ id: String(idAEliminar) })
+      );
 
       idAEliminar = null;
       bsModalElim.hide();
