@@ -117,7 +117,7 @@
             <div class="col-6 col-md-2">
               <label class="visually-hidden" for="filtro-rol">Filtrar por rol</label>
               <select id="filtro-rol" class="form-select">
-                <option value="">Todos los Roles</option>
+                <option value="">Todos los instructores</option>
               </select>
             </div>
             <!-- Estado -->

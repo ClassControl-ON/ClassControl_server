@@ -12,8 +12,8 @@
    - POST EliminarUsuario           -> eliminar
 
    Esta pantalla gestiona el mismo recurso "Usuarios" que
-   Gestión de Usuarios, pero enfocado en personal académico
-   (se excluye el rol "Aprendiz" del listado y de los selectores).
+   Gestión de Usuarios, pero enfocado exclusivamente en el
+   rol "Instructor" (listado, filtros, formulario y métricas).
    ============================================================ */
 
 'use strict';
@@ -23,19 +23,19 @@
 -------------------------------------------------- */
 let usuarios = [];
 let roles = [];
-let rolesPersonal = [];   // roles sin "Aprendiz", usados en filtros/formulario
+let rolesInstructores = [];   // catálogo filtrado al rol "Instructor"
 let tiposDocumento = [];
 let tiposVinculacion = [];
 let idAEliminar = null;
 
-function esRolAprendiz(descripcion) {
-  return (descripcion || '').trim().toLowerCase() === 'aprendiz';
+function esRolInstructor(descripcion) {
+  return (descripcion || '').trim().toLowerCase().includes('instructor');
 }
 
 function instructores() {
-  // "Personal" visible en esta pantalla: todo usuario cuyo rol no sea Aprendiz.
-  const idsExcluidos = new Set(roles.filter(r => esRolAprendiz(r.descripcion)).map(r => r.id));
-  return usuarios.filter(u => !idsExcluidos.has(u.rolId));
+  // Solo se muestran usuarios cuyo rol es Instructor.
+  const idsInstructor = new Set(rolesInstructores.map(r => r.id));
+  return usuarios.filter(u => idsInstructor.has(u.rolId));
 }
 
 /* --------------------------------------------------
@@ -140,10 +140,10 @@ async function cargarCatalogos() {
   tiposDocumento = tipoDocR.ok ? await tipoDocR.json() : [];
   tiposVinculacion = tipoVincR.ok ? await tipoVincR.json() : [];
 
-  rolesPersonal = roles.filter(r => !esRolAprendiz(r.descripcion));
+  rolesInstructores = roles.filter(r => esRolInstructor(r.descripcion));
 
-  llenarOpcionesSelect(document.getElementById('filtro-rol'), 'Todos los Roles', rolesPersonal);
-  llenarOpcionesSelect(document.getElementById('inst-rol'), 'Seleccionar…', rolesPersonal);
+  llenarOpcionesSelect(document.getElementById('filtro-rol'), 'Todos los instructores', rolesInstructores);
+  llenarOpcionesSelect(document.getElementById('inst-rol'), 'Seleccionar…', rolesInstructores);
   llenarOpcionesSelect(document.getElementById('inst-tipoDoc'), 'Seleccionar…', tiposDocumento);
 
   const hiddenVinculacion = document.getElementById('inst-tipoVinculacion');
@@ -153,8 +153,12 @@ async function cargarCatalogos() {
 }
 
 async function cargarUsuarios() {
-  const resp = await fetch('ConsultarUsuarios');
-  if (!resp.ok) throw new Error('No se pudo cargar la lista de personal');
+  const rolInstructor = rolesInstructores[0]?.id;
+  const url = rolInstructor
+    ? `ConsultarUsuarios?rol=${encodeURIComponent(rolInstructor)}`
+    : 'ConsultarUsuarios';
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('No se pudo cargar la lista de instructores');
   usuarios = await resp.json();
   renderTableData();
   renderMetricas();
@@ -238,14 +242,14 @@ function renderMetricas() {
   const lista   = instructores();
   const total   = lista.length;
   const activos = lista.filter(u => u.activo).length;
-  const insts   = lista.filter(u => rolNombre(u.rolId).toLowerCase() === 'instructor').length;
-  const admins  = total - insts;
+  const insts     = lista.filter(u => esRolInstructor(rolNombre(u.rolId))).length;
+  const inactivos = total - activos;
 
   const datos = [
-    { label: 'Total Personal', valor: total,   borde: '#38a800', col: 'col-6 col-xl-3' },
-    { label: 'Activos',        valor: activos, borde: '#38a800', col: 'col-6 col-xl-3' },
-    { label: 'Instructores',   valor: insts,   borde: '#1e40af', col: 'col-6 col-xl-3' },
-    { label: 'Admin / Coord.', valor: admins,  borde: '#7c3aed', col: 'col-6 col-xl-3' },
+    { label: 'Total Instructores', valor: total,     borde: '#38a800', col: 'col-6 col-xl-3' },
+    { label: 'Activos',            valor: activos,   borde: '#38a800', col: 'col-6 col-xl-3' },
+    { label: 'Instructores',       valor: insts,     borde: '#1e40af', col: 'col-6 col-xl-3' },
+    { label: 'Inactivos',          valor: inactivos, borde: '#7c3aed', col: 'col-6 col-xl-3' },
   ];
 
   const metricas = document.getElementById('metricas');
