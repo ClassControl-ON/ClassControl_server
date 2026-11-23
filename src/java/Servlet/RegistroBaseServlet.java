@@ -36,6 +36,8 @@ public abstract class RegistroBaseServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             System.out.println(getClass().getSimpleName() + " - error en parametros numericos: " + e.getMessage());
             responder(response, api, false, "Formato de datos invalido.", HttpServletResponse.SC_BAD_REQUEST);
+        } catch (IllegalArgumentException e) {
+            responder(response, api, false, e.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
         } catch (Controlador.ConflictoHorarioException e) {
             System.out.println(getClass().getSimpleName() + " - conflicto de horario: " + e.getMessage());
             responder(response, api, false, e.getMessage(), HttpServletResponse.SC_CONFLICT);

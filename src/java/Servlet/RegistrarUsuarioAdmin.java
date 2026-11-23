@@ -11,11 +11,10 @@ import java.time.LocalDate;
  * Registra un usuario desde el panel de administración (Gestión de Usuarios).
  *
  * A diferencia de {@link RegistrarUsuario} (formulario público de
- * autorregistro), este servlet SÍ permite asignar cualquier rol —
- * incluido Administrador — porque solo es alcanzable desde una sesión
- * ya autenticada (RegistroBaseServlet exige sesión activa antes de
- * llamar a guardar()) y la página que lo consume (Gestion_Usuarios.jsp)
- * ya está restringida a usuarios con rol Administrador.
+ * autorregistro), este servlet permite asignar cualquier rol,
+ * incluido Administrador, pero SOLO cuando quien lo invoca es
+ * Administrador. La autorización se comprueba en el servidor
+ * (Autorizacion.puedeGestionar) y de nuevo antes de asignar el rol 3.
  */
 @WebServlet("/RegistrarUsuarioAdmin")
 public class RegistrarUsuarioAdmin extends RegistroBaseServlet {
@@ -45,7 +44,11 @@ public class RegistrarUsuarioAdmin extends RegistroBaseServlet {
                 || "true".equalsIgnoreCase(activoStr.trim())
                 || "on".equalsIgnoreCase(activoStr.trim()));
 
-        usuario.setRoles_id_roles(entero(request, "rol"));
+        int rol = entero(request, "rol");
+        if (rol == 3 && !Autorizacion.esAdministrador(request)) {
+            throw new IllegalArgumentException("Solo un Administrador puede asignar el rol Administrador.");
+        }
+        usuario.setRoles_id_roles(rol);
         usuario.setTipo_Documento_id_tipo_Documento(entero(request, "tipoDoc"));
 
         String tipoVinculacionStr = request.getParameter("tipoVinculacion");

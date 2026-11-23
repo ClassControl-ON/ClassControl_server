@@ -17,7 +17,8 @@ public class ActualizarProgramacion extends ActualizarBaseServlet {
     @Override
     protected boolean actualizar(HttpServletRequest request) {
         Programacion_Instructores programacion = new Programacion_Instructores();
-        programacion.setId_programacion_Instructores(entero(request, "id"));
+        int id = entero(request, "id");
+        programacion.setId_programacion_Instructores(id);
         programacion.setObservaciones(textoOpcional(request, "Observaciones"));
         programacion.setFecha_inicial_Prog(fecha(request, "fecha_inicial_Prog"));
         programacion.setFecha_fin_Prog(fecha(request, "fecha_fin_Prog"));
@@ -25,11 +26,17 @@ public class ActualizarProgramacion extends ActualizarBaseServlet {
         programacion.setHora_inicio(hora(request, "hora_inicio"));
         programacion.setHora_fin(hora(request, "hora_fin"));
         programacion.setFicha_id_ficha(entero(request, "Ficha_id_ficha"));
+        Programacion_InstructoresDAO dao = new Programacion_InstructoresDAO();
+
         // Un Instructor siempre edita su propia programación: se ignora el
-        // valor que venga del cliente (igual que hace ConsultarProgramaciones).
+        // valor que venga del cliente y se comprueba la titularidad del id.
         if (Autorizacion.esInstructor(request)) {
             Integer idPropio = Autorizacion.idUsuarioDe(request);
             if (idPropio != null) {
+                Programacion_Instructores existente = dao.consultaProgramacion_Instructores(id);
+                if (existente == null || existente.getUsuarios_id_usuarios() != idPropio) {
+                    throw new IllegalArgumentException("No puedes editar esa programación.");
+                }
                 programacion.setUsuarios_id_usuarios(idPropio);
             } else {
                 programacion.setUsuarios_id_usuarios(entero(request, "Usuarios_id_usuarios"));
@@ -41,6 +48,6 @@ public class ActualizarProgramacion extends ActualizarBaseServlet {
         programacion.setTrimestre_id_trimestre(entero(request, "Trimestre_id_trimestre"));
         programacion.setEstado_id_estado(entero(request, "Estado_id_estado"));
         programacion.setActividades_id_actividades(entero(request, "Actividades_id_actividades"));
-        return new Programacion_InstructoresDAO().actualizarProgramacion_Instructores(programacion);
+        return dao.actualizarProgramacion_Instructores(programacion);
     }
 }

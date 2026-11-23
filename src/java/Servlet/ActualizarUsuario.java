@@ -43,7 +43,11 @@ public class ActualizarUsuario extends ActualizarBaseServlet {
         usuario.setUsername(texto(request, "username"));
         usuario.setNivel_Educativo(textoOpcional(request, "nivel_Educativo"));
         usuario.setProfesion(textoOpcional(request, "profesion"));
-        usuario.setRoles_id_roles(entero(request, "rol"));
+        int rol = entero(request, "rol");
+        if (rol == 3 && !Autorizacion.esAdministrador(request)) {
+            throw new IllegalArgumentException("Solo un Administrador puede asignar el rol Administrador.");
+        }
+        usuario.setRoles_id_roles(rol);
         usuario.setTipo_Documento_id_tipo_Documento(entero(request, "tipoDoc"));
         usuario.setTipo_vinculacion_id_tipo_vinculacion(
                 enteroOpcional(request, "tipoVinculacion", usuario.getTipo_vinculacion_id_tipo_vinculacion()));

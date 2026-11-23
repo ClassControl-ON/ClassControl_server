@@ -47,18 +47,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * MobileServlet — fachada pública de lectura (GET) del sistema.
+ * MobileServlet — fachada de lectura (GET) del sistema para la APK (Flutter).
  *
- * Punto único de consumo para la APK (Flutter) y para quien quiera explorar
- * la base de datos desde el navegador. En vez de golpear decenas de
- * servlets independientes, todos los catálogos se consultan aquí con un
- * mismo formato JSON.
+ * Requiere sesión activa. Las acciones con datos sensibles (usuarios,
+ * reportes, permisos y estado) están restringidas a Administrador y
+ * Coordinador. El resto de catálogos están disponibles para cualquier
+ * usuario autenticado.
  *
  * Uso (solo GET):
- *   /api/mobile                  → índice auto-documentado de acciones
- *   /api/mobile?action=usuarios  → listado de usuarios (sin clave)
- *   /api/mobile?action=usuarios&ficha=12&rol=2&q=luna   → con filtros
- *   /api/mobile?action=estado    → salud del servicio y conteos por tabla
+ *   /api/mobile                  → índice de acciones permitidas
+ *   /api/mobile?action=ambientes → catálogo con formato JSON
+ *   /api/mobile?action=fichas&limit=50
  *
  * Medidas listas para sobrecarga:
  *   - Los catálogos estáticos se cachean en memoria 20 s (menos golpes a BD).
@@ -74,6 +73,10 @@ public class MobileServlet extends HttpServlet {
     private static final Set<String> CAMPOS_PROHIBIDOS = Set.of(
             "clave", "password", "contrasena", "token", "secret", "hash",
             "salt", "pin");
+
+    /** Acciones que solo pueden consultar Administrador o Coordinador. */
+    private static final Set<String> ACCIONES_PRIVADAS = Set.of(
+            "usuarios", "reportes", "permisos", "estado");
 
     private static final int LIMITE_DEFECTO = 500;
     private static final int LIMITE_MAXIMO = 2000;
@@ -98,12 +101,24 @@ public class MobileServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
         response.setHeader("Cache-Control", "no-store");
 
+        if (Autorizacion.idUsuarioDe(request) == null) {
+            denegar(response, HttpServletResponse.SC_UNAUTHORIZED,
+                    "Se requiere una sesión activa.");
+            return;
+        }
+
         String accion = request.getParameter("action");
         if (accion == null || accion.isBlank()) {
             accion = "index";
         }
-        accion = accion.trim().toLowerCase();
+        accion = accion.trim().toLowerCase(java.util.Locale.ROOT);
         registrar(accion);
+
+        if (ACCIONES_PRIVADAS.contains(accion) && !esPrivilegiado(request)) {
+            denegar(response, HttpServletResponse.SC_FORBIDDEN,
+                    "No tienes permiso para consultar esa acción.");
+            return;
+        }
 
         String json;
         try {
@@ -129,11 +144,23 @@ public class MobileServlet extends HttpServlet {
         return c == null ? 0 : c.get();
     }
 
+    private boolean esPrivilegiado(HttpServletRequest request) {
+        return Autorizacion.esAdministrador(request) || Autorizacion.esCoordinador(request);
+    }
+
+    private void denegar(HttpServletResponse response, int status, String mensaje)
+            throws IOException {
+        response.setStatus(status);
+        try (PrintWriter out = response.getWriter()) {
+            out.print("{\"error\":" + json(mensaje) + "}");
+        }
+    }
+
     // ════════════════════════ DISPATCHER ════════════════════════
 
     private String resolver(String accion, HttpServletRequest request) throws Exception {
         switch (accion) {
-            case "index":        return indexJson();
+            case "index":        return indexJson(esPrivilegiado(request));
             case "estado":       return estadoJson();
             case "usuarios":     return conFiltros(request, () -> new UsuariosDAO()
                     .listarUsuarios(Autorizacion.intParam(request, "ficha"),
@@ -168,7 +195,7 @@ public class MobileServlet extends HttpServlet {
 
     // ════════════════════════ SALIDAS ════════════════════════
 
-    private String indexJson() {
+    private String indexJson(boolean privilegiado) {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"servicio\":\"ClassControl Mobile API\",")
           .append("\"version\":\"1.0\",")
@@ -184,9 +211,12 @@ public class MobileServlet extends HttpServlet {
             "roles", "etapas", "vinculacioneslaborales", "permisos",
             "programaciones", "reportes"
         };
-        for (int i = 0; i < acciones.length; i++) {
-            if (i > 0) sb.append(",");
-            sb.append(nombreJson(acciones[i])).append(":").append(json(acciones[i]));
+        boolean primera = true;
+        for (String accion : acciones) {
+            if (!privilegiado && ACCIONES_PRIVADAS.contains(accion)) continue;
+            if (!primera) sb.append(",");
+            primera = false;
+            sb.append(nombreJson(accion)).append(":").append(json(accion));
         }
         sb.append("}}");
         return sb.toString();

@@ -40,6 +40,10 @@ public final class Autorizacion {
     private static final Set<String> TIPOS_GESTIONABLES_POR_INSTRUCTOR =
             Set.of("programacion", "programaciones");
 
+    /** Tipos que solo un Administrador puede crear/actualizar. */
+    private static final Set<String> TIPOS_RESTRINGIDOS_A_ADMIN =
+            Set.of("usuario", "rol", "roles", "permiso", "permisos");
+
     /** Longitud máxima razonable para un texto que viene del cliente. */
     private static final int MAX_TEXTO = 200;
 
@@ -48,7 +52,8 @@ public final class Autorizacion {
 
     /**
      * Autoriza operaciones de creación y actualización.
-     * Administrador y Coordinador pueden gestionar cualquier tipo.
+     * Administrador puede gestionar cualquier tipo.
+     * Coordinador puede gestionar catálogos, pero NO usuarios ni roles.
      * Instructor solo puede gestionar su propia programación/horario.
      * Aprendiz nunca gestiona nada.
      */
@@ -57,7 +62,12 @@ public final class Autorizacion {
 
         String rol = rolDe(request);
 
-        if (esAdministrador(rol) || esCoordinador(rol)) {
+        if (esAdministrador(rol)) {
+            return true;
+        }
+
+        if (esCoordinador(rol) && tipo != null
+                && !TIPOS_RESTRINGIDOS_A_ADMIN.contains(tipo.toLowerCase(java.util.Locale.ROOT))) {
             return true;
         }
 

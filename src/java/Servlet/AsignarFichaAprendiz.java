@@ -1,6 +1,8 @@
 package Servlet;
 
 import Controlador.FichaDAO;
+import Controlador.UsuariosDAO;
+import Modelo.Usuarios;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +20,8 @@ import java.io.PrintWriter;
 @WebServlet("/AsignarFichaAprendiz")
 public class AsignarFichaAprendiz extends HttpServlet {
 
+    private static final int ROL_APRENDIZ = 2;
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -33,22 +37,39 @@ public class AsignarFichaAprendiz extends HttpServlet {
             return;
         }
 
-        // Por seguridad, un aprendiz solo puede modificar SU ficha.
-        // Administrador/Coordinador pueden indicar otro idUsuario.
+        // Solo Administrador/Coordinador pueden indicar otro idUsuario.
+        // Aprendiz e Instructor únicamente pueden modificar su propia ficha.
         int idUsuario = idSesion;
-        if (!Autorizacion.esAprendiz(request)) {
-            String pedido = request.getParameter("idUsuario");
-            if (pedido != null && !pedido.isBlank()) {
-                try {
-                    idUsuario = Integer.parseInt(pedido.trim());
-                } catch (NumberFormatException e) {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    try (PrintWriter out = response.getWriter()) {
-                        out.print("{\"error\":\"idUsuario inválido.\"}");
-                    }
-                    return;
+        String pedido = request.getParameter("idUsuario");
+        boolean privilegiado = Autorizacion.esAdministrador(request)
+                || Autorizacion.esCoordinador(request);
+
+        if (pedido != null && !pedido.isBlank()) {
+            if (!privilegiado) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                try (PrintWriter out = response.getWriter()) {
+                    out.print("{\"error\":\"No puedes modificar la ficha de otro usuario.\"}");
                 }
+                return;
             }
+            try {
+                idUsuario = Integer.parseInt(pedido.trim());
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                try (PrintWriter out = response.getWriter()) {
+                    out.print("{\"error\":\"idUsuario inválido.\"}");
+                }
+                return;
+            }
+        }
+
+        Usuarios destino = new UsuariosDAO().consultaUsuarios(idUsuario);
+        if (destino == null || destino.getRoles_id_roles() != ROL_APRENDIZ) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            try (PrintWriter out = response.getWriter()) {
+                out.print("{\"error\":\"El usuario destino debe ser un aprendiz.\"}");
+            }
+            return;
         }
 
         String fichaParam = request.getParameter("idFicha");
