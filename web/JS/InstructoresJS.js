@@ -153,11 +153,7 @@ async function cargarCatalogos() {
 }
 
 async function cargarUsuarios() {
-  const rolInstructor = rolesInstructores[0]?.id;
-  const url = rolInstructor
-    ? `ConsultarUsuarios?rol=${encodeURIComponent(rolInstructor)}`
-    : 'ConsultarUsuarios';
-  const resp = await fetch(url);
+  const resp = await fetch('ConsultarUsuarios');
   if (!resp.ok) throw new Error('No se pudo cargar la lista de instructores');
   usuarios = await resp.json();
   renderTableData();
