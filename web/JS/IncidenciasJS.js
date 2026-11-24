@@ -189,9 +189,9 @@ function accionesDe(r) {
     </button>`;
   }
 
-  return `<td class="text-end">
+  return `<div class="text-end">
     <div class="d-flex justify-content-end gap-1">${html}</div>
-  </td>`;
+  </div>`;
 }
 
 function renderTabla(lista = listaVisible) {
@@ -230,7 +230,7 @@ function initDataTable() {
       info: 'Mostrando _START_ - _END_ de _TOTAL_ incidencia(s)',
       infoEmpty: 'Sin incidencias disponibles',
       infoFiltered: '(filtradas de _MAX_ totales)',
-      emptyTable: 'No hay incidencias con los filtros aplicados.',
+      emptyTable: 'No hay incidencias para mostrar.',
       paginate: { previous: '«', next: '»' },
     },
     pageLength: 10,
@@ -293,9 +293,6 @@ function initFiltros() {
 -------------------------------------------------- */
 
 async function cargar() {
-  const cuerpo = document.getElementById('cuerpoTabla');
-  cuerpo.innerHTML = '<tr><td colspan="8" class="cc-inc-empty">Cargando incidencias…</td></tr>';
-
   try {
     const resp = await fetch('ConsultarReportes', { headers: { 'Accept': 'application/json' } });
     if (!resp.ok) throw new Error('El servidor no respondió correctamente');
@@ -315,9 +312,7 @@ async function cargar() {
     listaVisible = [];
     dtInstance?.clear().draw();
     renderMetricas([]);
-    cuerpo.innerHTML = `<tr><td colspan="8" class="cc-inc-empty text-danger">
-      ${esc(err.message || 'No se pudieron cargar las incidencias.')}
-    </td></tr>`;
+    toast(err.message || 'No se pudieron cargar las incidencias.', 'error');
   }
 }
 

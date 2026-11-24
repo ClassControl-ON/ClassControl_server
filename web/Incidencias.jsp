@@ -151,9 +151,7 @@
             <th class="text-end">Acciones</th>
           </tr>
         </thead>
-        <tbody id="cuerpoTabla">
-          <tr><td colspan="8" class="cc-inc-empty">Cargando…</td></tr>
-        </tbody>
+        <tbody id="cuerpoTabla"></tbody>
       </table>
     </div>
   </div>
