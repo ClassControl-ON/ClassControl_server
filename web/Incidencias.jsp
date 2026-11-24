@@ -2,6 +2,7 @@
 <%-- Protección de sesión --%>
 <%
   String sesNombres   = (String)  session.getAttribute("nombres");
+  String sesApellidos = (String)  session.getAttribute("apellidos");
   String sesUsername  = (String)  session.getAttribute("username");
   Integer sesRol      = (Integer) session.getAttribute("rol");
   Integer sesIdUser   = (Integer) session.getAttribute("id_usuario");
