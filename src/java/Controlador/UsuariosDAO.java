@@ -17,6 +17,14 @@ public class UsuariosDAO {
             "activo, fecha_ExpiracionContraseña, Roles_id_roles, Tipo_Documento_id_tipo_Documento, " +
             "Tipo_vinculacion_id_tipo_vinculacion, Ficha_id_ficha";
 
+    /** Columnas de usuarios calificadas con alias para poder hacer JOIN con roles. */
+    private static final String COLUMNAS_CON_ALIAS =
+            "u.id_usuarios, u.nombres, u.apellidos, u.identificacion, u.fecha_Nacimiento, u.correo, " +
+            "u.telefono, u.direccion, u.username, u.nivel_Educativo, u.profesion, u.clave, " +
+            "u.fecha_Creacion, u.activo, u.fecha_ExpiracionContraseña, u.Roles_id_roles, " +
+            "u.Tipo_Documento_id_tipo_Documento, u.Tipo_vinculacion_id_tipo_vinculacion, " +
+            "u.Ficha_id_ficha";
+
     // ══════════════════════════════════════════════════════════════
     //  LISTAR — todos los usuarios (reutiliza mapearUsuario)
     // ══════════════════════════════════════════════════════════════
@@ -84,6 +92,45 @@ public class UsuariosDAO {
             e.printStackTrace();
         } finally {
             try { con.close(); } catch (SQLException e) { System.out.println("❌ Error al cerrar conexión: " + e.getMessage()); }
+        }
+
+        return lista;
+    }
+
+    /**
+     * Lista únicamente usuarios con rol Instructor.
+     *
+     * El filtro se aplica en SQL (JOIN con roles por descripción), no en la
+     * vista, para que ningún módulo pueda recibir administradores,
+     * coordinadores u otros perfiles desde este listado. Se usa el mismo
+     * criterio que ProgramacionInstructoresServlet (LIKE '%instructor%').
+     */
+    public List<Usuarios> listarInstructores() {
+        List<Usuarios> lista = new ArrayList<>();
+        Conexion conexion = new Conexion();
+        Connection con = conexion.getConexion();
+        if (con == null) {
+            System.out.println("❌ No se pudo obtener conexión para listar instructores.");
+            return lista;
+        }
+
+        String sql =
+                "SELECT " + COLUMNAS_CON_ALIAS + " FROM usuarios u " +
+                "INNER JOIN roles r ON r.id_roles = u.Roles_id_roles " +
+                "WHERE LOWER(r.descripcion_Roles) LIKE '%instructor%' " +
+                "ORDER BY u.nombres, u.apellidos";
+
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             java.sql.ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(mapearUsuario(rs));
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Error al listar instructores: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try { con.close(); }
+            catch (SQLException e) { System.out.println("❌ Error al cerrar conexión: " + e.getMessage()); }
         }
 
         return lista;

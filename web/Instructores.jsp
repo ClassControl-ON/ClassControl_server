@@ -103,7 +103,7 @@
         <form id="form-filtros" novalidate>
           <div class="row g-3 align-items-end">
             <!-- Búsqueda -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-5">
               <div class="input-group cc-search-group">
                 <span class="input-group-text bg-transparent border-end-0">
                   <span class="material-symbols-outlined cc-icon-sm">search</span>
@@ -113,15 +113,8 @@
                        placeholder="Buscar por nombre, apellido o cédula…" autocomplete="off" />
               </div>
             </div>
-            <!-- Rol -->
-            <div class="col-6 col-md-2">
-              <label class="visually-hidden" for="filtro-rol">Filtrar por rol</label>
-              <select id="filtro-rol" class="form-select">
-                <option value="">Todos los instructores</option>
-              </select>
-            </div>
             <!-- Estado -->
-            <div class="col-6 col-md-2">
+            <div class="col-12 col-md-3">
               <label class="visually-hidden" for="filtro-estado">Filtrar por estado</label>
               <select id="filtro-estado" class="form-select">
                 <option value="">Estado</option>

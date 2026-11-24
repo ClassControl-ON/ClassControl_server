@@ -3,7 +3,7 @@
    InstructoresJS.js  (Bootstrap 5 + DataTables)
 
    Datos reales desde el backend:
-   - GET  ConsultarUsuarios         -> lista de personal (JSON)
+   - GET  ConsultarInstructores     -> lista exclusiva de instructores (JSON)
    - GET  ConsultarRoles            -> catálogo de roles
    - GET  ConsultarTiposDocumento   -> catálogo de tipos de documento
    - GET  ConsultarTiposVinculacion -> catálogo de tipos de vinculación
@@ -22,6 +22,7 @@
    1. ESTADO EN MEMORIA (poblado desde el backend)
 -------------------------------------------------- */
 let usuarios = [];
+let listaVisible = [];   // últimos registros pintados (tabla, métricas y CSV)
 let roles = [];
 let rolesInstructores = [];   // catálogo filtrado al rol "Instructor"
 let tiposDocumento = [];
@@ -33,9 +34,9 @@ function esRolInstructor(descripcion) {
 }
 
 function instructores() {
-  // Solo se muestran usuarios cuyo rol es Instructor.
-  const idsInstructor = new Set(rolesInstructores.map(r => r.id));
-  return usuarios.filter(u => idsInstructor.has(u.rolId));
+  // El backend (ConsultarInstructores + UsuariosDAO.listarInstructores)
+  // ya garantiza que todos los registros son del rol Instructor.
+  return usuarios;
 }
 
 /* --------------------------------------------------
@@ -142,7 +143,6 @@ async function cargarCatalogos() {
 
   rolesInstructores = roles.filter(r => esRolInstructor(r.descripcion));
 
-  llenarOpcionesSelect(document.getElementById('filtro-rol'), 'Todos los instructores', rolesInstructores);
   llenarOpcionesSelect(document.getElementById('inst-rol'), 'Seleccionar…', rolesInstructores);
   llenarOpcionesSelect(document.getElementById('inst-tipoDoc'), 'Seleccionar…', tiposDocumento);
 
@@ -153,7 +153,7 @@ async function cargarCatalogos() {
 }
 
 async function cargarUsuarios() {
-  const resp = await fetch('ConsultarUsuarios');
+  const resp = await fetch('ConsultarInstructores');
   if (!resp.ok) throw new Error('No se pudo cargar la lista de instructores');
   usuarios = await resp.json();
   renderTableData();
@@ -193,6 +193,7 @@ function initDataTable() {
 function renderTableData(lista = instructores()) {
   if (!dtInstance) return;
 
+  listaVisible = lista;
   dtInstance.clear();
 
   lista.forEach(u => {
@@ -234,18 +235,17 @@ function renderTableData(lista = instructores()) {
 /* --------------------------------------------------
    6. MÉTRICAS
 -------------------------------------------------- */
-function renderMetricas() {
-  const lista   = instructores();
-  const total   = lista.length;
-  const activos = lista.filter(u => u.activo).length;
-  const insts     = lista.filter(u => esRolInstructor(rolNombre(u.rolId))).length;
+function renderMetricas(lista = instructores()) {
+  const total     = lista.length;
+  const activos   = lista.filter(u => u.activo).length;
   const inactivos = total - activos;
+  const areas     = new Set(lista.map(u => (u.profesion || '').trim()).filter(Boolean)).size;
 
   const datos = [
-    { label: 'Total Instructores', valor: total,     borde: '#38a800', col: 'col-6 col-xl-3' },
+    { label: 'Total instructores', valor: total,     borde: '#38a800', col: 'col-6 col-xl-3' },
     { label: 'Activos',            valor: activos,   borde: '#38a800', col: 'col-6 col-xl-3' },
-    { label: 'Instructores',       valor: insts,     borde: '#1e40af', col: 'col-6 col-xl-3' },
-    { label: 'Inactivos',          valor: inactivos, borde: '#7c3aed', col: 'col-6 col-xl-3' },
+    { label: 'Inactivos',          valor: inactivos, borde: '#1e40af', col: 'col-6 col-xl-3' },
+    { label: 'Áreas',              valor: areas,     borde: '#7c3aed', col: 'col-6 col-xl-3' },
   ];
 
   const metricas = document.getElementById('metricas');
@@ -298,29 +298,30 @@ function badgeEstado(activo) {
 -------------------------------------------------- */
 function initFiltros() {
   const filtroBusqueda = document.getElementById('filtro-busqueda');
-  const filtroRol      = document.getElementById('filtro-rol');
   const filtroEstado   = document.getElementById('filtro-estado');
   const formFiltros    = document.getElementById('form-filtros');
 
   const aplicar = () => {
     const busq   = (filtroBusqueda?.value ?? '').trim().toLowerCase();
-    const rolId  = filtroRol?.value ?? '';
     const estado = filtroEstado?.value ?? '';
 
     const lista = instructores().filter(u => {
       const nombre = `${u.nombres} ${u.apellidos}`.toLowerCase();
       return (!busq   || nombre.includes(busq) || u.identificacion.includes(busq) || u.correo.toLowerCase().includes(busq))
-          && (!rolId  || u.rolId === Number.parseInt(rolId, 10))
           && (!estado || (estado === 'Activo') === u.activo);
     });
 
     renderTableData(lista);
+    renderMetricas(lista);
   };
 
-  [filtroBusqueda, filtroRol, filtroEstado].forEach(el => el?.addEventListener('input', aplicar));
+  [filtroBusqueda, filtroEstado].forEach(el => el?.addEventListener('input', aplicar));
 
   formFiltros?.addEventListener('submit', e => { e.preventDefault(); aplicar(); });
-  formFiltros?.addEventListener('reset',  () => setTimeout(() => renderTableData(), 0));
+  formFiltros?.addEventListener('reset', () => setTimeout(() => {
+    renderTableData();
+    renderMetricas();
+  }, 0));
 }
 
 /* --------------------------------------------------
@@ -519,7 +520,7 @@ function initDeleteEvents() {
    13. EXPORTAR CSV
 -------------------------------------------------- */
 function exportarCSV() {
-  const lista = instructores();
+  const lista = listaVisible.length ? listaVisible : instructores();
   const cabecera = ['Nombres', 'Apellidos', 'Identificación', 'Correo', 'Teléfono', 'Área', 'Rol', 'Estado'];
   const filas = lista.map(u =>
     [u.nombres, u.apellidos, u.identificacion, u.correo, u.telefono || '', u.profesion || '', rolNombre(u.rolId), u.activo ? 'Activo' : 'Inactivo']
@@ -534,7 +535,7 @@ function exportarCSV() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('Reporte exportado correctamente.');
+  showToast(`Se exportaron ${lista.length} instructor(es).`);
 }
 
 /* --------------------------------------------------
