@@ -302,8 +302,10 @@ async function cargar() {
     const datos = await resp.json();
     incidencias = Array.isArray(datos) ? datos : [];
 
-    const tipos = [...new Set(incidencias.map(r => String(r.tipo || '').trim()).filter(Boolean))].sort();
-    const ambientes = [...new Set(incidencias.map(r => String(r.ambiente || '').trim()).filter(Boolean))].sort();
+    const tipos = [...new Set(incidencias.map(r => String(r.tipo || '').trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+    const ambientes = [...new Set(incidencias.map(r => String(r.ambiente || '').trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
     llenarFiltro(document.getElementById('filtro-tipo'), tipos, 'Tipo');
     llenarFiltro(document.getElementById('filtro-ambiente'), ambientes, 'Ambiente');
 
